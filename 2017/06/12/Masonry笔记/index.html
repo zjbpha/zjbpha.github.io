@@ -92,7 +92,7 @@
 <p>统一的类别名 <code>MAS_VIEW</code> 是 <code>UIView</code><br>一些常用的宏见daily<br>通过为UIView添加类别的形式扩展了mas_的属性 和 主要的约束变更修改方法   </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mas_makeConstraints:       </div><div class="line">mas_updateConstraints:</div><div class="line">mas_remakeConstraints:</div></pre></td></tr></table></figure>
 <p>类的结构关系</p>
-<p><img src="/2017/06/12/Masonry笔记/masonry-1.png" alt="结构"></p>
+<img src="/2017/06/12/Masonry笔记/masonry-1.png" alt="This is an image" title="This is an image">
 <p>我们一般使用 </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">UIView *view = [UIView new];</div><div class="line">   [self.view addSubview:view];</div><div class="line">   [view mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">       make.top.mas_equalTo(self.view.mas_top);</div><div class="line">       make.left.bottom.right.mas_equalTo(self.view);</div><div class="line">   &#125;];</div></pre></td></tr></table></figure>
 <p>view 的 <code>mas_makeConstraints</code> 方法 是 MAS 扩展的类<code>View+MASShorthandAdditions.h</code> 提供的。他其实是 <code>View+MASAdditions</code> 一个补充，提供一个便捷的访问方式。   </p>
