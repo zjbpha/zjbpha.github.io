@@ -109,63 +109,18 @@
 
 
 
+  
+  <div class="tags">
+  	<i class="fa fa-tag"></i>
+    <a href="/tags/源码笔记/">源码笔记</a>
+  </div>
+
 <div class="clear"></div>
       
     </header>
     <div class="entry">
       
-        <p>#Masonry</p>
-<p>统一的类别名 <code>MAS_VIEW</code> 是 <code>UIView</code><br>一些常用的宏见daily<br>通过为UIView添加类别的形式扩展了mas_的属性 和 主要的约束变更修改方法   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mas_makeConstraints:       </div><div class="line">mas_updateConstraints:</div><div class="line">mas_remakeConstraints:</div></pre></td></tr></table></figure>
-<p>类的结构关系</p>
-<img src="/2017/06/12/Masonry笔记/masonry-1.png" alt="This is an image" title="This is an image">
-<p>我们一般使用 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">UIView *view = [UIView new];</div><div class="line">   [self.view addSubview:view];</div><div class="line">   [view mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">       make.top.mas_equalTo(self.view.mas_top);</div><div class="line">       make.left.bottom.right.mas_equalTo(self.view);</div><div class="line">   &#125;];</div></pre></td></tr></table></figure>
-<p>view 的 <code>mas_makeConstraints</code> 方法 是 MAS 扩展的类<code>View+MASShorthandAdditions.h</code> 提供的。他其实是 <code>View+MASAdditions</code> 一个补充，提供一个便捷的访问方式。   </p>
-<p>具体看 <code>mas_makeConstraints</code> 方法        </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (NSArray *)mas_makeConstraints:(void(^)(MASConstraintMaker *))block &#123;</div><div class="line">	//autolayout 的开关</div><div class="line">    self.translatesAutoresizingMaskIntoConstraints = NO;</div><div class="line">    //构建者</div><div class="line">    MASConstraintMaker *constraintMaker = [[MASConstraintMaker alloc] initWithView:self];</div><div class="line">    //调用外部添加的约束 (见p1)</div><div class="line">    block(constraintMaker);</div><div class="line">    return [constraintMaker install];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>p1: 处执行的代码  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">make.top.mas_equalTo(self.view.mas_top);</div><div class="line">make.left.bottom.right.mas_equalTo(self.view);</div></pre></td></tr></table></figure>
-<p>这里<code>make</code>就是刚刚p1处的创建的构建者，他的top属性在<code>MASConstraintMaker</code> 中实际上是创建了一个对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">step: 1</div><div class="line">- (MASConstraint *)top &#123;</div><div class="line">    return [self addConstraintWithLayoutAttribute:NSLayoutAttributeTop];</div><div class="line">&#125;</div><div class="line">step: 2</div><div class="line">- (MASConstraint *)addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute &#123;</div><div class="line">    return [self constraint:nil addConstraintWithLayoutAttribute:layoutAttribute];</div><div class="line">&#125;</div><div class="line">step:3</div><div class="line">这个方法是在构造者的对象中</div><div class="line">- (MASConstraint *)constraint:(MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute&#123;</div><div class="line">	//这里根据开始传进来的view 创建`MASViewAttribute`</div><div class="line">	//接着包装成`MASViewConstraint` 这个类是`MASConstraint` 的子类</div><div class="line">	//最后把这个对象放到maker这个构造者的`constraints`数组当中</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>上面make.top返回了一个<code>MASConstraint</code>的对象，接着调用了<code>mas_equalTo</code>这个方法，<code>mas_equalTo</code>是一个宏<code>equalTo(MASBoxValue((__VA_ARGS__)))</code>     </p>
-<p>其中<code>MASBoxValue</code>一会看<br><code>equalTo()</code>可能出现的参数大概有几种</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">index</th>
-<th style="text-align:center">value</th>
-<th style="text-align:center">type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">@(1)</td>
-<td style="text-align:center">NSNumber</td>
-</tr>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">view.mas_top</td>
-<td style="text-align:center">MASViewAttribute</td>
-</tr>
-<tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">view</td>
-<td style="text-align:center">MAS_VIEW</td>
-</tr>
-</tbody>
-</table>
-<p>那么刚刚<code>MASBoxValue</code>做了什么？       </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">tips:</div><div class="line">	@encode</div><div class="line">	编译器指令，返回一个给定类型编码为一种内部表示的字符串</div><div class="line">	类似于typeof</div><div class="line">extend:</div><div class="line">@ ---&gt; An object (whether statically typed or typed id)</div><div class="line"># ---&gt; A class object (Class)</div><div class="line"></div><div class="line">sample code: </div><div class="line">A *a = A.new;</div><div class="line">@encode(typeof(a))---&gt;@</div><div class="line">@encode(typeof(A))---&gt;&#123; A =# &#125;</div></pre></td></tr></table></figure>
-<p><code>MASBoxValue</code>对数值型、坐标型的<code>__VA_ARGS__</code>进行了<code>NSValue</code>的包装<br>回去看<code>equalTo()</code>方法，他是<code>MASConstraint</code>的实力调用的，因为在创建的时候是返回的一个<code>MASViewConstraint</code>的父类指针引用，所以最终他还是调用的子类<code>MASViewConstraint</code>的<code>equalTo</code>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">in file MASConstraint.m </div><div class="line">- (MASConstraint * (^)(id))equalTo &#123;</div><div class="line">    return ^id(id attribute) &#123;</div><div class="line">        return self.equalToWithRelation(attribute, NSLayoutRelationEqual);</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation &#123; MASMethodNotImplemented(); &#125;</div></pre></td></tr></table></figure>
-<p>返回的是一个函数，这个函数可以返回<code>MASConstraint</code>对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">in MASViewConstraint.m file</div><div class="line">- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation &#123;</div><div class="line">    return ^id(id attribute, NSLayoutRelation relation) &#123;</div><div class="line">    	// |==============================================|</div><div class="line">    	// |make.height.equalTo(@[greenView, blueView]);  |</div><div class="line">    	// |多个view的约束可能会传进数组                      |</div><div class="line">    	// |循环做了else的操作                              |</div><div class="line">    	// |==============================================|</div><div class="line">        if ([attribute isKindOfClass:NSArray.class]) &#123;</div><div class="line">            NSAssert(!self.hasLayoutRelation, @&quot;Redefinition of constraint relation&quot;);</div><div class="line">            NSMutableArray *children = NSMutableArray.new;</div><div class="line">            for (id attr in attribute) &#123;</div><div class="line">                MASViewConstraint *viewConstraint = [self copy];</div><div class="line">                viewConstraint.layoutRelation = relation;</div><div class="line">                viewConstraint.secondViewAttribute = attr;</div><div class="line">                [children addObject:viewConstraint];</div><div class="line">            &#125;</div><div class="line">            MASCompositeConstraint *compositeConstraint = [[MASCompositeConstraint alloc] initWithChildren:children];</div><div class="line">            compositeConstraint.delegate = self.delegate;</div><div class="line">            [self.delegate constraint:self shouldBeReplacedWithConstraint:compositeConstraint];</div><div class="line">            return compositeConstraint;</div><div class="line">        &#125; else &#123;</div><div class="line">            NSAssert(!self.hasLayoutRelation || self.layoutRelation == relation &amp;&amp; [attribute isKindOfClass:NSValue.class], @&quot;Redefinition of constraint relation&quot;);</div><div class="line">            self.layoutRelation = relation;</div><div class="line">            self.secondViewAttribute = attribute;</div><div class="line">            return self;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里 <code>MASCompositeConstraint</code> 等一下看<br>就把约束和关系加到 <code>MASConstraint</code>中了</p>
-<p>构建者maker 最后在调用<code>install</code> 当中会根据调用函数是<code>remake、update、make</code>来做约束<code>uninstall</code>的更新。在遍历当前<code>constraints</code>数组中的约束调用他的<code>install</code> (同<code>equalTo</code>)类似，是子类<code>MASViewConstraint</code> 中</p>
-<p>下次写<br>下班。。。</p>
-
+        <p>阅读源码笔记</p>
       
     </div>
     <footer>
