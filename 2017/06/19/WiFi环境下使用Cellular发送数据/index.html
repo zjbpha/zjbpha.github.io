@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="小山河">
 <meta property="og:description" content="#WiFi环境下使用Cellular发送数据产品需求，配合一些操作可以做到用户身份的确认。">
 <meta property="og:image" content="http://yoursite.com/2017/06/19/WiFi环境下使用Cellular发送数据/http_head_formate.png">
-<meta property="og:updated_time" content="2017-06-19T05:37:47.000Z">
+<meta property="og:updated_time" content="2017-06-19T06:07:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WiFi环境下使用Cellular发送数据">
 <meta name="twitter:description" content="#WiFi环境下使用Cellular发送数据产品需求，配合一些操作可以做到用户身份的确认。">
@@ -382,9 +382,9 @@
 <p>##sendbuffer格式</p>
 <p>HTTP头结构<br><img src="/2017/06/19/WiFi环境下使用Cellular发送数据/http_head_formate.png" alt="HTTP头" title="HTTP头"></p>
 <p>###GET<br>如下：    </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">GET /path?query_string HTTP/1.1\r\n</div><div class="line">...</div><div class="line">Connection:close</div><div class="line">\r\n</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">GET /path?query_string HTTP/1.1\r\n</div><div class="line">...</div><div class="line">Connection: keep-alive</div><div class="line">\r\n</div></pre></td></tr></table></figure>
 <p>###POST<br>如下：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">POST /path HTTP/1.1\r\n</div><div class="line">Content-Type: text/plain\r\n</div><div class="line">Content-Length: 12\r\n</div><div class="line">...</div><div class="line">Connection:close</div><div class="line">\r\n</div><div class="line">query_string</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">POST /path HTTP/1.1\r\n</div><div class="line">Content-Type: text/plain\r\n</div><div class="line">Content-Length: 12\r\n</div><div class="line">...</div><div class="line">Connection: keep-alive</div><div class="line">\r\n</div><div class="line">query_string</div></pre></td></tr></table></figure>
 <p>##大概流程<br>  流程   </p>
 <ul>
 <li>create a socket    </li>
