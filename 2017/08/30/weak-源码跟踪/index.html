@@ -101,7 +101,7 @@
 <meta property="og:description" content="weak 跟踪学习笔记">
 <meta property="og:image" content="http://yoursite.com/2017/08/30/weak-源码跟踪/main代码.png">
 <meta property="og:image" content="http://yoursite.com/2017/08/30/weak-源码跟踪/weak调用堆栈.png">
-<meta property="og:updated_time" content="2017-08-30T09:43:24.000Z">
+<meta property="og:updated_time" content="2017-08-30T09:45:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="weak 源码跟踪">
 <meta name="twitter:description" content="weak 跟踪学习笔记">
@@ -381,7 +381,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">setXXX(value)</div><div class="line">   └──objc_storeWeak(id *location, id newObj)</div><div class="line">   				└───storeWeak(id *location, objc_object *newObj)</div><div class="line">   				</div><div class="line">location --&gt; 0x0000000100703db8</div></pre></td></tr></table></figure>
 <p>这边 <code>obj</code> 的地址 和 <code>objc_storeWeak</code>的第一个参数的地址 做个对比<br><code>setIvar--&gt; objc_storeWeak</code>这边，我参考了<code>_object_setIvar</code>帮助理解       </p>
 <p>这是<strong>地址偏移计算函数</strong>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">ivarOffset = ivar_getOffset(ivar); //偏移单位 </div><div class="line">...</div><div class="line">//typedef struct objc_object *id   //id 是一个接受任何类型对象的指针的类型</div><div class="line">id *location = (id *)((char *)obj + offset); //location 就是 指针的指针</div><div class="line">...</div><div class="line">objc_storeWeak(location, value)</div><div class="line">```  </div><div class="line"></div><div class="line"></div><div class="line">`objc_storeWeak `这里入参就是 __地址的地址__ 和 __新的存储值__</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ivarOffset = ivar_getOffset(ivar); //偏移单位 </div><div class="line">..</div><div class="line">//typedef struct objc_object *id   //id 是一个接受任何类型对象的指针的类型</div><div class="line">id *location = (id *)((char *)obj + offset); //location 就是 指针的指针</div><div class="line">..</div><div class="line">objc_storeWeak(location, value)</div><div class="line">```  </div><div class="line"></div><div class="line"></div><div class="line">接着 `objc_storeWeak `这里入参就是 __地址的地址__ 和 __新的存储值__</div></pre></td></tr></table></figure>
 <pre><code>XXView *view = [XXView new];
 
 XXObject *vv = [XXObject new];
