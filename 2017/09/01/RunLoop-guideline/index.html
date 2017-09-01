@@ -1,0 +1,853 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="翻译," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="网上已经有很多总结，自己读一遍再理解比较，查看疏漏。">
+<meta name="keywords" content="翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RunLoop Guideline 翻译">
+<meta property="og:url" content="http://yoursite.com/2017/09/01/RunLoop-guideline/index.html">
+<meta property="og:site_name" content="小山河">
+<meta property="og:description" content="网上已经有很多总结，自己读一遍再理解比较，查看疏漏。">
+<meta property="og:image" content="http://yoursite.com/2017/09/01/RunLoop-guideline/custominputsource.jpg">
+<meta property="og:updated_time" content="2017-09-01T05:47:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RunLoop Guideline 翻译">
+<meta name="twitter:description" content="网上已经有很多总结，自己读一遍再理解比较，查看疏漏。">
+<meta name="twitter:image" content="http://yoursite.com/2017/09/01/RunLoop-guideline/custominputsource.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/01/RunLoop-guideline/"/>
+
+
+
+
+
+  <title>RunLoop Guideline 翻译 | 小山河</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?58dc8367843d65b8486545ec53b4a483";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小山河</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/01/RunLoop-guideline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小山河">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小山河">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RunLoop Guideline 翻译</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-01T11:49:37+08:00">
+                2017-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/01/RunLoop-guideline/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/01/RunLoop-guideline/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>网上已经有很多总结，自己读一遍再理解比较，查看疏漏。</p>
+<a id="more"></a>
+<h1 id="threading-programming-guide"><a href="#Threading-Programming-Guide" class="headerlink" title="Threading Programming Guide"></a>Threading Programming Guide</h1><p><strong><em>run loop</em></strong><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1" target="_blank" rel="external">^guideline</a> 接收两种不同类型的事件。<strong><em>Input source</em></strong>派发异步的事件，通常是来自于其他线程或者其他程序的消息。<strong><em>Timer sources</em></strong>转发同步的事件，以计时器或者间隔重复触发的。这两种事件源通过特定(<strong><em>application-specific</em></strong>)的方式处理接受到的消息。</p>
+<h2 id="source"><a href="#Source" class="headerlink" title="Source"></a>Source</h2><h3 id="input-source"><a href="#Input-Source" class="headerlink" title="Input Source"></a>Input Source</h3><h3 id="timer-source"><a href="#Timer-Source" class="headerlink" title="Timer Source"></a>Timer Source</h3><h2 id="observers"><a href="#Observers" class="headerlink" title="Observers"></a>Observers</h2><p>相比较被相关同步或者一部的消息发生的触发的事件源,run loop 的观察者在run loop执行的特定时机被出发。你可以用观察者去 <strong>准备</strong> 你的线程去处理一个事件或者在线程将要休眠之前去 <strong>准备</strong> 一些东西。你可以把观察者和下面几个事件相关联  </p>
+<pre><code>- 进入run loop          
+- run loop 准备处理一个timer     
+- run loop 准备处理一个 input 事件源    
+- run loop 准备休眠    
+- run loop 被唤醒，但是没有处理唤醒他的事件     
+- run loop 退出      
+</code></pre><h2 id="run-loop-事件的顺序"><a href="#Run-Loop-事件的顺序" class="headerlink" title="Run Loop 事件的顺序"></a>Run Loop 事件的顺序</h2><ol>
+<li>通知观察者进入 run loop 了</li>
+<li>通知观察者 any ready timer 将要被触发了</li>
+<li>通知观察者 不是基于 port 的 input 源事件 将被触发</li>
+<li>触发 非基于 port 的事件</li>
+<li>如果有基于 port 的事件准备好等待出发，立刻处理，Go to 步骤9</li>
+<li>通知观察者 线程将要休眠了</li>
+<li>将线程休眠直到有如下事件发生<ul>
+<li>基于 port 的事件源到达</li>
+<li>定时器触发了</li>
+<li>run loop 超时了</li>
+<li>run loop 被唤醒了</li>
+</ul>
+</li>
+<li>通知观察者线程刚被唤醒了</li>
+<li>处理没有判决的事件<ul>
+<li>如果用户定义的定时器触发了，处理定时器事件接着重启 loop，Go to 步骤2</li>
+<li>如果 input 事件源触发了，分发事件</li>
+<li>如果 run loop 被唤醒了，但是还没有超时，重启 loop，Go to 步骤2</li>
+</ul>
+</li>
+<li>通知观察者 run loop 退出了</li>
+</ol>
+<p>因为上面 2 和 3 观察者得到的通知时机早于这些时机真实发生的时候，这里可能存在一个时间上的间隔。如果事件对于时间处理特别敏感，你可以用 loop 进入睡眠和从睡眠中被唤醒的通知来帮助你关联事件之间的时间间隔。</p>
+<h2 id="你合适需要使用-run-loop"><a href="#你合适需要使用-Run-Loop" class="headerlink" title="你合适需要使用 Run Loop"></a>你合适需要使用 Run Loop</h2><ul>
+<li>用 port 或者 自定义的 input 事件源 和 其他线程通信</li>
+<li>在这个线程上使用timer计时器</li>
+<li>在Cocoa的程序中使用类似 performSelector… 这样的方法</li>
+<li>让线程保活处理周期性的任务</li>
+</ul>
+<h2 id="使用-run-loop-对象"><a href="#使用-Run-Loop-对象" class="headerlink" title="使用 Run Loop 对象"></a>使用 Run Loop 对象</h2><h3 id="获得-run-loop-对象"><a href="#获得-Run-Loop-对象" class="headerlink" title="获得 Run Loop 对象"></a>获得 Run Loop 对象</h3><ul>
+<li>在 Cocoa 的程序中 用 <code>currentRunLoop</code> 这个类方法</li>
+<li>用 <code>CFRunLoopGetCurrent</code> 方法</li>
+</ul>
+<p>尽管他们不是 toll-free bridge 的类型，你依然可以从 NSRunLoop 的对象中获得 CFRunLoopRef。因为他们指向的是同一个 run loop。</p>
+<h3 id="配置-run-loop"><a href="#配置-Run-Loop" class="headerlink" title="配置 Run Loop"></a>配置 Run Loop</h3><p>因为你在次要的线程中起了 run loop。所以你必须添加至少一个 Input 源 或者 timer 到 run loop 里面去。用 <code>CFRunLoopObserverRef</code> 方法创建一个观察者，同事用 <code>CFRunLoopAddObserver</code>方法添加到你的 run loop 当中。观察者必须是用 Core Foundation 创建的，哪怕是 Cocoa 的程序。</p>
+<p>当为有长时间保活需求的线程配置 run loop 的时候，比较好的是添加至少一个 input 源去接受消息。尽管你也可以用一个timer定时器添加到 run loop 中，一旦定时器被触发过了，定时器就失效了，这个就会导致 run loop 的退出。添加一个重复触发的定时器可以保证 run loop 在一个长时间的周期中，但是这样会周期性的调用触发的定时器去唤醒线程。相比之下，放置一个 input 的事件源保持线程休眠直到事件到达，这种做法是比较好的。</p>
+<h3 id="启动-run-loop"><a href="#启动-Run-Loop" class="headerlink" title="启动 Run Loop"></a>启动 Run Loop</h3><p>有多种办法可以启动 run loop ，包括如下方式</p>
+<ol>
+<li>无条件的</li>
+<li>一个时间限制</li>
+<li>一个特地的模式</li>
+</ol>
+<p>无条件的是一个最简单的方案，但是也是描述的最少的。如果你是用这种方式的话，那么你就把你的线程放到了一个无限循环的 loop 中了，你仅仅有少些的控制 loop 的能力。你可以添加或者移除 input 源和定时器，但是唯一可以停止他的办法就是杀死他。当然 run loop 也不能运行在自定义的模式中。</p>
+<p>运行在一定有效时间内比无条件运行稍微好一点。这种方式下，run loop 在事件到达或者有效时间过了之后会退出。事件到达时，事件会被派发下去给 handler 处理接着 run loop 退出。你也可以重启 run loop 处理下面的事件。当有效时间到达的时候，你可以简单的重启一下 run loop。</p>
+<p>最后一种特定的模式。就是在上一种方式的基础上添加上运行模式。</p>
+<h3 id="退出-run-loop"><a href="#退出-Run-Loop" class="headerlink" title="退出 Run Loop"></a>退出 Run Loop</h3><p>有两种方法可以使 run loop 在处理过消息之后退出</p>
+<ul>
+<li>在配置 run loop 的时候添加超时时间</li>
+<li>给 run loop 下发停止命令</li>
+</ul>
+<p>如果你可以控制 run loop ，那么设置超时时间是一种比较好的方法。设置一个超时时间可以让 run loop 结束他的正常处理流程，包括在退出之前派发消息给观察者。</p>
+<p>使用 CFRunLoopStop 函数停止 run loop 和设置超时时间的效果相似。run loop 发送出剩下的消息然后退出。不同点在于你可以用这种方式结束那些用无条件开启的 run loop。</p>
+<p>尽管将 input 源和timer定时器从 run loop 中移除也会导致他退出，但是这并不是一个可靠的退出方式。有些系统例程会添加 input 源到 run loop 中去处理消息。你代码可能不知道这些 input 源，可能会没有移除他们，从而导致 run loop 没有退出。</p>
+<h3 id="线程安全-和-run-loop-对象"><a href="#线程安全-和-Run-Loop-对象" class="headerlink" title="线程安全 和 Run Loop 对象"></a>线程安全 和 Run Loop 对象</h3><p>线程安全取决于你使用什么样的 API 去操控线程的 run loop。Core Foundation中的方法通常是线程安全的，可以在任意线程里调用。如果你正在执行修改 run loop 配置的操作，无论怎么样，当在可能的情况下用拥有 run loop 的线程去这样做是比较好的。 </p>
+<p>Cocoa 的 NSRunLoop 类并不是线程安全的。如果你使用 NSRunLoop 去修改你的 run loop，你必须在拥有这个 run loop 的线程中操作他。在其他线程中给本线程添加 input 源 或者 定时器会导致你的代码 crash 或者其他异常。</p>
+<h2 id="配置-run-loop-源"><a href="#配置-Run-Loop-源" class="headerlink" title="配置 Run Loop 源"></a>配置 Run Loop 源</h2><h3 id="定义一个自定义的-input-源"><a href="#定义一个自定义的-Input-源" class="headerlink" title="定义一个自定义的 Input 源"></a>定义一个自定义的 Input 源</h3><p>创建一个自定义源涉及到下面几个方面</p>
+<ul>
+<li>你希望自定义源处理的信息</li>
+<li>一个调度的例程好让其他端知道如何和你的 input 源通信</li>
+<li>一个处理的例程去完成其他段发过来的请求</li>
+<li>一个取消的例程用来让自定义源作废</li>
+</ul>
+<p>因为你创建了一个自定义的 input 源来处理自定义的消息，配置操作非常灵活。调度例程、处理例程、取消例程就是比较关键的例程对于你自定义的 input 源。然而其余大部分 input 源的行为，不在这些处理例程的范围之内。像如何定义处理发过来的数据和如何和其他线程通信的机制是取决于你的。</p>
+<p>下面展示了一个自定义 input 源的例子。在这个例子中，程序的主线程保留了一个 input 源(工作线程 run loop)的引用，一个自定义的命令缓冲区（为 input 源准备的）引用和一个安装了上面 input 源的 run loop 引用。当主线程有一个任务需要转发给工作线程的时候，主线程发送了一条命令到命令缓冲区并携带一些任务开始可能需要的信息。（因为主线程和工作线程同事拥有对命令缓冲区的操作权限，那么每次操作应该是同步的。）一旦命令发出了，主线程发送信号给 input 源同时唤醒工作线程的 run loop。接受到唤醒命令之后，工作线程的 run loop 调用 input 源的处理方法，去处理那些已经发送到命令缓冲区的指令。</p>
+<div align="center"><br><img src="/2017/09/01/RunLoop-guideline/custominputsource.jpg" alt="3-2 Operating a custom input source"><br></div>
+
+
+<h3 id="定义-input-源"><a href="#定义-Input-源" class="headerlink" title="定义 Input 源"></a>定义 Input 源</h3><p>定义一个自定义的 input 源需要使用 Core Foundation 的例程去配置你的 run loop 源然后把他添加到你的 run loop 中。尽管一些基础的处理方法是基于C的函数，但是这个不影响你用Objective-C 或者 C++去包装这些方法到你的代码中。</p>
+<p>上图 3-2 上的中使用了 Object-C 对象管理命令缓冲区并协助 run loop。下面 3-3 代码会展示这些对象的定义。 RunLoopSource 对象管理命令缓冲区并用以接受其他线程发过来的消息。下面代码也展示了 RunLoopContext 对象，一个包裹对象用来传递 RunLoopSource 对象并且提供run loop的引用给程序主线程。      </p>
+<p><strong>3-3 自定义 input 源对象的定义</strong></p>
+<pre><code>@interface RunLoopSource : NSObject
+{
+    CFRunLoopSourceRef runLoopSource;
+    NSMutableArray* commands;
+}
+
+- (id)init;
+- (void)addToCurrentRunLoop;
+- (void)invalidate;
+
+// Handler method
+- (void)sourceFired;
+
+// Client interface for registering commands to process
+- (void)addCommand:(NSInteger)command withData:(id)data;
+- (void)fireAllCommandsOnRunLoop:(CFRunLoopRef)runloop;
+
+@end
+
+// These are the CFRunLoopSourceRef callback functions.
+void RunLoopSourceScheduleRoutine (void *info, CFRunLoopRef rl, CFStringRef mode);
+void RunLoopSourcePerformRoutine (void *info);
+void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode);
+
+// RunLoopContext is a container object used during registration of the input source.
+@interface RunLoopContext : NSObject
+{
+    CFRunLoopRef        runLoop;
+    RunLoopSource*        source;
+}
+@property (readonly) CFRunLoopRef runLoop;
+@property (readonly) RunLoopSource* source;
+
+- (id)initWithSource:(RunLoopSource*)src andLoop:(CFRunLoopRef)loop;
+@end
+</code></pre><p>虽然 Object-C 代码已经处理了 input 源的的数据，把 input 源添加到 run loop 中需要基于 C 的回调方法。这些方法第一个回调的时机是当你把 run loop 源添加到你的 run loop 中，如下面 3-4 所示。因为这些 input 源只有一个客户（主线程），他用例程方法发送一个消息其中包含了程序的委托去注册自己</p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/30/weak-源码跟踪/" rel="next" title="weak 源码跟踪">
+                <i class="fa fa-chevron-left"></i> weak 源码跟踪
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/favicon.ico"
+               alt="小山河" />
+          <p class="site-author-name" itemprop="name">小山河</p>
+           
+              <p class="site-description motion-element" itemprop="description">Life goes on</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#threading-programming-guide"><span class="nav-number">1.</span> <span class="nav-text">Threading Programming Guide</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#source"><span class="nav-number">1.1.</span> <span class="nav-text">Source</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#input-source"><span class="nav-number">1.1.1.</span> <span class="nav-text">Input Source</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timer-source"><span class="nav-number">1.1.2.</span> <span class="nav-text">Timer Source</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#observers"><span class="nav-number">1.2.</span> <span class="nav-text">Observers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#run-loop-事件的顺序"><span class="nav-number">1.3.</span> <span class="nav-text">Run Loop 事件的顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你合适需要使用-run-loop"><span class="nav-number">1.4.</span> <span class="nav-text">你合适需要使用 Run Loop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-run-loop-对象"><span class="nav-number">1.5.</span> <span class="nav-text">使用 Run Loop 对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获得-run-loop-对象"><span class="nav-number">1.5.1.</span> <span class="nav-text">获得 Run Loop 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-run-loop"><span class="nav-number">1.5.2.</span> <span class="nav-text">配置 Run Loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-run-loop"><span class="nav-number">1.5.3.</span> <span class="nav-text">启动 Run Loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#退出-run-loop"><span class="nav-number">1.5.4.</span> <span class="nav-text">退出 Run Loop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程安全-和-run-loop-对象"><span class="nav-number">1.5.5.</span> <span class="nav-text">线程安全 和 Run Loop 对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-run-loop-源"><span class="nav-number">1.6.</span> <span class="nav-text">配置 Run Loop 源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义一个自定义的-input-源"><span class="nav-number">1.6.1.</span> <span class="nav-text">定义一个自定义的 Input 源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义-input-源"><span class="nav-number">1.6.2.</span> <span class="nav-text">定义 Input 源</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小山河</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://zjbpha.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/09/01/RunLoop-guideline/';
+          this.page.identifier = '2017/09/01/RunLoop-guideline/';
+          this.page.title = 'RunLoop Guideline 翻译';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://zjbpha.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
