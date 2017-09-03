@@ -1,0 +1,1084 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="碎片整理," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="对排序结果，进行二分法查找交换类：快速和冒泡插入类：简单插入和希尔选择类：简单选择和堆归并类：二路归并和多路归并  算法导论 看了几章啃不动 放一放先 反过去整理了一下算法入门">
+<meta name="keywords" content="碎片整理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法基础">
+<meta property="og:url" content="http://yoursite.com/2017/09/01/算法基础/index.html">
+<meta property="og:site_name" content="小山河">
+<meta property="og:description" content="对排序结果，进行二分法查找交换类：快速和冒泡插入类：简单插入和希尔选择类：简单选择和堆归并类：二路归并和多路归并  算法导论 看了几章啃不动 放一放先 反过去整理了一下算法入门">
+<meta property="og:image" content="http://yoursite.com/2017/09/01/算法基础/归并排序.png">
+<meta property="og:image" content="http://yoursite.com/2017/09/01/算法基础/计数排序.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/09/01/算法基础/dijkstra1.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/09/01/算法基础/Bellman-Ford.png">
+<meta property="og:updated_time" content="2017-09-01T06:29:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法基础">
+<meta name="twitter:description" content="对排序结果，进行二分法查找交换类：快速和冒泡插入类：简单插入和希尔选择类：简单选择和堆归并类：二路归并和多路归并  算法导论 看了几章啃不动 放一放先 反过去整理了一下算法入门">
+<meta name="twitter:image" content="http://yoursite.com/2017/09/01/算法基础/归并排序.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/01/算法基础/"/>
+
+
+
+
+
+  <title>算法基础 | 小山河</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?58dc8367843d65b8486545ec53b4a483";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小山河</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/01/算法基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小山河">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小山河">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">算法基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-01T14:19:53+08:00">
+                2017-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/01/算法基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/01/算法基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>对排序结果，进行二分法查找<br>交换类：快速和冒泡<br>插入类：简单插入和希尔<br>选择类：简单选择和堆<br>归并类：二路归并和多路归并</p>
+</blockquote>
+<p>算法导论 看了几章啃不动 放一放先 反过去整理了一下算法入门 </p>
+<a id="more"></a>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h3 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h3><p>对A数组进行每次查找最小数值的操作，将结果添加到数组B中，同时移动数组B的最小数指向。<br>A和B 可以复用同一空间</p>
+<h3 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h3><p><code>Θ(n^2)</code></p>
+<h3 id="元素移动"><a href="#元素移动" class="headerlink" title="元素移动"></a>元素移动</h3><p><code>Θ(n)</code></p>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><h3 id="简述"><a href="#简述-1" class="headerlink" title="简述"></a>简述</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">step 1 -&gt;（12, 9, 3, 7, 14, 11）</div><div class="line">step 2 -&gt; (9, 12, 3, 7, 14, 11)</div><div class="line">step 3 -&gt; (3, 9, 12, 7, 14, 11)</div><div class="line">step 4 -&gt; (3, 7, 9, 12, 14, 11)</div><div class="line">step 5 -&gt; (3, 7, 9, 12, 11, 14)</div></pre></td></tr></table></figure>
+<p>对A数组的已有顺序，依次取值对已有顺序进行对比插入。</p>
+<h3 id="时间"><a href="#时间-1" class="headerlink" title="时间"></a>时间</h3><p><code>Θ(n^2)</code></p>
+<h3 id="位移"><a href="#位移" class="headerlink" title="位移"></a>位移</h3><p>可能达到 <code>Θ(n^2)</code></p>
+<h2 id="归并排序分治递归"><a href="#归并排序-分治递归" class="headerlink" title="归并排序(分治递归)"></a>归并排序<font color="#ff4500">(分治递归)</font></h2><h3 id="简述"><a href="#简述-2" class="headerlink" title="简述"></a>简述</h3><p><img src="/2017/09/01/算法基础/归并排序.png" alt="归并排序"></p>
+<h3 id="时间"><a href="#时间-2" class="headerlink" title="时间"></a>时间</h3><p><code>Θ(nlgn)</code></p>
+<h3 id="空间"><a href="#空间" class="headerlink" title="空间"></a>空间</h3><p>对所有数组项进行拷贝</p>
+<h2 id="快速排序分治递归"><a href="#快速排序-分治递归" class="headerlink" title="快速排序(分治递归)"></a>快速排序<font color="#ff4500">(分治递归)</font></h2><h3 id="简述"><a href="#简述-3" class="headerlink" title="简述"></a>简述</h3><p>设置主元，依照主元进行快速划分，然后对主元划分开的区域在做快速</p>
+<h3 id="空间"><a href="#空间-1" class="headerlink" title="空间"></a>空间</h3><p>原址工作</p>
+<h3 id="时间"><a href="#时间-3" class="headerlink" title="时间"></a>时间</h3><p>最坏 <code>Θ(n^2)</code>  平均 Θ(nlgn)<br>渐进运行时间介于 <strong>最坏</strong> 和 <strong>平均</strong> 之间</p>
+<p><strong>堆</strong><br><strong>冒泡</strong><br><strong>Shell排序</strong><br><strong>桶</strong></p>
+<h2 id="分治法"><a href="#分治法" class="headerlink" title="分治法"></a>分治法</h2><blockquote>
+<p>分解<br>解决<br>合并</p>
+</blockquote>
+<h2 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h2><blockquote>
+<p>查找          </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">算法</th>
+<th style="text-align:center">最坏时间</th>
+<th style="text-align:center">最好时间</th>
+<th style="text-align:center">需要保证有序数组</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">线性</td>
+<td style="text-align:center">Θ(n)</td>
+<td style="text-align:center">Θ(1)</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">二分</td>
+<td style="text-align:center">Θ(lgn)</td>
+<td style="text-align:center">Θ(1)</td>
+<td style="text-align:center">yes</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>排序</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">算法</th>
+<th style="text-align:center">最坏时间</th>
+<th style="text-align:center">最好时间</th>
+<th style="text-align:center">最坏交换</th>
+<th style="text-align:center">是否原址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">选择</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">Θ(n)</td>
+<td style="text-align:center">yes</td>
+</tr>
+<tr>
+<td style="text-align:center">插入</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">Θ(n)</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">yes</td>
+</tr>
+<tr>
+<td style="text-align:center">归并</td>
+<td style="text-align:center">Θ(nlgn)</td>
+<td style="text-align:center">Θ(nlgn)</td>
+<td style="text-align:center">Θ(nlgn)</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">快速</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">Θ(nlgn)</td>
+<td style="text-align:center">Θ(n^2)</td>
+<td style="text-align:center">yes</td>
+</tr>
+</tbody>
+</table>
+<p> 排序算法的下届和如何超越下届</p>
+<h2 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h2><h3 id="简述"><a href="#简述-4" class="headerlink" title="简述"></a>简述</h3><p><img src="/2017/09/01/算法基础/计数排序.jpg" alt="计数排序"></p>
+<p>统计集合(值&lt;M)中出现的值的个数，值在有序表中出现的位置应该是统计值位数小于该只的和(相同值要加)</p>
+<h2 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h2><blockquote>
+<p>LSD (Least significant digital) 由数值的低位开始<br>MSD (Most significant ditital)  由数值的高位开始<br>LSD的基数排序适用于位数少的数列，位数多(十、分、百、千)，使用MSD的效率会比较好</p>
+</blockquote>
+<h3 id="简述"><a href="#简述-5" class="headerlink" title="简述"></a>简述</h3><p>分配时 由末位向首位进行<br>初始数列：10, 31, 112, 412, 0, 24</p>
+<p><strong>LSD</strong>    </p>
+<blockquote>
+<p>个位开始  </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序列</th>
+<th style="text-align:center">可选值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">10</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">31</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">112，412</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">24</td>
+</tr>
+</tbody>
+</table>
+<p>结果数列：10, 31, 112, 412, 24</p>
+<blockquote>
+<p>十位</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序列</th>
+<th style="text-align:center">可选值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">10，112，412</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">24</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">31</td>
+</tr>
+</tbody>
+</table>
+<p>结果数列：10, 112, 412, 24, 31</p>
+<blockquote>
+<p>百位</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序列</th>
+<th style="text-align:center">可选值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">10，24，31</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">112</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">412</td>
+</tr>
+</tbody>
+</table>
+<p>结果数列：10, 24, 31, 112, 412</p>
+<hr>
+<p><strong>有向无环图</strong></p>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><h3 id="简述"><a href="#简述-6" class="headerlink" title="简述"></a>简述</h3><p>每次讲入度为0的节点步骤入栈，然后从有向无环图上摘去该节点和该节点的边</p>
+<h3 id="时间"><a href="#时间-4" class="headerlink" title="时间"></a>时间</h3><p>n个顶点 m条边<br><code>Θ(n+m)</code></p>
+<p><strong>最短路径</strong> : 用于计算一个节点到其他所有节点的最短路径</p>
+<h2 id="dijkstra迪杰斯特拉-算法"><a href="#Dijkstra-迪杰斯特拉-算法" class="headerlink" title="Dijkstra(迪杰斯特拉) 算法"></a>Dijkstra(迪杰斯特拉) 算法</h2><blockquote>
+<p>贪心算法思想：是一种在每一步选择中都采取在当前状态下最好或最优（即最有利）的选择，从而希望导致结果是最好或最优的算法<br>要求图里面所有的边的权值都是非负的<br><img src="/2017/09/01/算法基础/dijkstra1.jpg" alt=""></p>
+</blockquote>
+<p>邻接表   </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">初始点</th>
+<th style="text-align:center">(连接点:权重)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">入度为0 (2:10),(4:30),(5:100)</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">(3:50)</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">(5:10)</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">(3:20),(5:60)</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">出度为0</td>
+</tr>
+</tbody>
+</table>
+<p>迭代过程</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">S</th>
+<th style="text-align:center">u</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">{1}</td>
+<td style="text-align:center">null</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">∞</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">{1,2}</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">60</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">{1,2,4}</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">50</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">{1,2,4,3}</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">60</td>
+</tr>
+<tr>
+<td style="text-align:center">{1,2,4,3,5}</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>克鲁斯卡尔</strong><br><strong>普里姆</strong></p>
+<h2 id="bellman-ford-算法"><a href="#Bellman-Ford-算法" class="headerlink" title="Bellman-Ford 算法"></a>Bellman-Ford 算法</h2><p>允许存在负权边, <strong>最短路径最多包含(|v|-1)条边</strong></p>
+<p><img src="/2017/09/01/算法基础/Bellman-Ford.png" alt=""></p>
+<p>根据最短路径生成的树高度进行迭代</p>
+<p>迭代过程</p>
+<p><code>for edge(u,v) in E(G) do</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">tree deep</th>
+<th style="text-align:center">path</th>
+<th style="text-align:center">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1 -&gt; 2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1 -&gt; 2 -&gt; 3</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">1 -&gt; 2 -&gt; 3 -&gt; 4</td>
+<td style="text-align:center">-2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>迭代结束</strong><br>接着<br><strong>再对</strong> 每条边进行<code>RELAX</code>   </p>
+<p>发现<code>shortest[2] &lt; shotest[4] + weight(4,2)</code></p>
+<p><strong>则</strong> 存在负权值回路</p>
+<h3 id="算法优化"><a href="#算法优化" class="headerlink" title="算法优化"></a>算法优化</h3><p>TODO: <strong>SPFA算法</strong></p>
+<h2 id="floyd-warshall-算法"><a href="#Floyd-Warshall-算法" class="headerlink" title="Floyd-Warshall 算法"></a>Floyd-Warshall 算法</h2><blockquote>
+<p>动态规划<br>建立顶点的二维数组，录入到达的权值。核心思想    </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">for(i = 1; i &lt;= n; i++)  </div><div class="line">        for(j = 1; j &lt;= n; j++)  </div><div class="line">            for(k = 1; k &lt;= n; k++)  </div><div class="line">                if(a[j][i] &lt; inf &amp;&amp; a[i][k] &lt; inf &amp;&amp; a[j][k] &gt; a[j][i] + a[i][k])  </div><div class="line">                    a[j][k] = a[j][i] + a[i][k];</div></pre></td></tr></table></figure>
+<h3 id="时间"><a href="#时间-5" class="headerlink" title="时间"></a>时间</h3><p><code>Θ(n^3)</code></p>
+<hr>
+<p><strong>字符串</strong></p>
+<blockquote>
+<p>子序列 {可不连续 顺序一定}<br>公共子序列<br>公共最长子序列<br>子串 = {子序列+取值连续}</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/碎片整理/" rel="tag"># 碎片整理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/01/RunLoop-guideline/" rel="next" title="RunLoop Guideline 翻译">
+                <i class="fa fa-chevron-left"></i> RunLoop Guideline 翻译
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/01/Darwin整理/" rel="prev" title="Darwin整理 (1)">
+                Darwin整理 (1) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/favicon.ico"
+               alt="小山河" />
+          <p class="site-author-name" itemprop="name">小山河</p>
+           
+              <p class="site-description motion-element" itemprop="description">Life goes on</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择排序"><span class="nav-number">1.</span> <span class="nav-text">选择排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">1.1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">1.2.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元素移动"><span class="nav-number">1.3.</span> <span class="nav-text">元素移动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入排序"><span class="nav-number">2.</span> <span class="nav-text">插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">2.1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">2.2.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位移"><span class="nav-number">2.3.</span> <span class="nav-text">位移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归并排序分治递归"><span class="nav-number">3.</span> <span class="nav-text">归并排序(分治递归)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">3.1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">3.2.</span> <span class="nav-text">时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间"><span class="nav-number">3.3.</span> <span class="nav-text">空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速排序分治递归"><span class="nav-number">4.</span> <span class="nav-text">快速排序(分治递归)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">4.1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间"><span class="nav-number">4.2.</span> <span class="nav-text">空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">4.3.</span> <span class="nav-text">时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治法"><span class="nav-number">5.</span> <span class="nav-text">分治法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结对比"><span class="nav-number">6.</span> <span class="nav-text">总结对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计数排序"><span class="nav-number">7.</span> <span class="nav-text">计数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">7.1.</span> <span class="nav-text">简述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基数排序"><span class="nav-number">8.</span> <span class="nav-text">基数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">8.1.</span> <span class="nav-text">简述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓扑排序"><span class="nav-number">9.</span> <span class="nav-text">拓扑排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简述"><span class="nav-number">9.1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">9.2.</span> <span class="nav-text">时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dijkstra迪杰斯特拉-算法"><span class="nav-number">10.</span> <span class="nav-text">Dijkstra(迪杰斯特拉) 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bellman-ford-算法"><span class="nav-number">11.</span> <span class="nav-text">Bellman-Ford 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法优化"><span class="nav-number">11.1.</span> <span class="nav-text">算法优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#floyd-warshall-算法"><span class="nav-number">12.</span> <span class="nav-text">Floyd-Warshall 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时间"><span class="nav-number">12.1.</span> <span class="nav-text">时间</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小山河</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://zjbpha.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/09/01/算法基础/';
+          this.page.identifier = '2017/09/01/算法基础/';
+          this.page.title = '算法基础';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://zjbpha.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
