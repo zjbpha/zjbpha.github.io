@@ -93,17 +93,17 @@
 
 
 
-<meta name="description" content="语言或平台层面 循环引用 加速启动时间  pre-main {加载应用可执行文件、加载dyld、加载dylib} main {dyld调用main()、调用UIApplicationMain、WillFinishLaunching、didFinishLaunching} 首屏渲染动画    业务逻辑处理的优化 对于局部内存分配较多的地方，选择 autoreleasepool 去处理。 不要 blo">
+<meta name="description" content="日常优化整理笔记">
 <meta name="keywords" content="碎片整理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="优化TIPS">
 <meta property="og:url" content="http://yoursite.com/2017/11/14/优化TIPS/index.html">
 <meta property="og:site_name" content="小山河">
-<meta property="og:description" content="语言或平台层面 循环引用 加速启动时间  pre-main {加载应用可执行文件、加载dyld、加载dylib} main {dyld调用main()、调用UIApplicationMain、WillFinishLaunching、didFinishLaunching} 首屏渲染动画    业务逻辑处理的优化 对于局部内存分配较多的地方，选择 autoreleasepool 去处理。 不要 blo">
-<meta property="og:updated_time" content="2017-11-14T09:48:22.864Z">
+<meta property="og:description" content="日常优化整理笔记">
+<meta property="og:updated_time" content="2017-11-14T10:13:29.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="优化TIPS">
-<meta name="twitter:description" content="语言或平台层面 循环引用 加速启动时间  pre-main {加载应用可执行文件、加载dyld、加载dylib} main {dyld调用main()、调用UIApplicationMain、WillFinishLaunching、didFinishLaunching} 首屏渲染动画    业务逻辑处理的优化 对于局部内存分配较多的地方，选择 autoreleasepool 去处理。 不要 blo">
+<meta name="twitter:description" content="日常优化整理笔记">
 
 
 
@@ -379,7 +379,8 @@
       
 
       
-        <h2 id="语言或平台层面"><a href="#语言或平台层面" class="headerlink" title="语言或平台层面"></a>语言或平台层面</h2><ol>
+        <p>日常优化整理笔记<br><a id="more"></a></p>
+<h2 id="语言或平台层面"><a href="#语言或平台层面" class="headerlink" title="语言或平台层面"></a>语言或平台层面</h2><ol>
 <li>循环引用</li>
 <li>加速启动时间 <ol>
 <li>pre-main {加载应用可执行文件、加载dyld、加载dylib}</li>
