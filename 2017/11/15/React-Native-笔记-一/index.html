@@ -1,0 +1,807 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="源码阅读," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="RN 源码跟踪前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。">
+<meta name="keywords" content="源码阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native 笔记 一">
+<meta property="og:url" content="http://yoursite.com/2017/11/15/React-Native-笔记-一/index.html">
+<meta property="og:site_name" content="小山河">
+<meta property="og:description" content="RN 源码跟踪前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。">
+<meta property="og:image" content="http://yoursite.com/2017/11/15/React-Native-笔记-一/数据走向.png">
+<meta property="og:updated_time" content="2017-11-15T08:01:22.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native 笔记 一">
+<meta name="twitter:description" content="RN 源码跟踪前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。">
+<meta name="twitter:image" content="http://yoursite.com/2017/11/15/React-Native-笔记-一/数据走向.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/15/React-Native-笔记-一/"/>
+
+
+
+
+
+  <title>React Native 笔记 一 | 小山河</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?58dc8367843d65b8486545ec53b4a483";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小山河</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/15/React-Native-笔记-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小山河">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小山河">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Native 笔记 一</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T15:56:31+08:00">
+                2017-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">源码阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/15/React-Native-笔记-一/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/11/15/React-Native-笔记-一/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="rn-源码跟踪"><a href="#RN-源码跟踪" class="headerlink" title="RN 源码跟踪"></a>RN 源码跟踪</h1><p>前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。</p>
+<a id="more"></a>
+<h2 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h2><p>由 RCTRootView 生成一个 rootView。这里遇到了一个重要的类 RCTBridge <strong>TODO:这是一个什么设计模式的?</strong> ,他接受了刚刚创建 rootView 的 url 和 launchOptions 两个参数。</p>
+<p>对于 这个 Bridge 最后调用了初始化函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (instancetype)initWithDelegate:(id&lt;RCTBridgeDelegate&gt;)delegate</div><div class="line">                       bundleURL:(NSURL *)bundleURL</div><div class="line">                  moduleProvider:(RCTBridgeModuleProviderBlock)block</div><div class="line">                   launchOptions:(NSDictionary *)launchOptions</div><div class="line">&#123;</div><div class="line">  if (self = [super init]) &#123;</div><div class="line">    _delegate = delegate;</div><div class="line">    _bundleURL = bundleURL;</div><div class="line">    _moduleProvider = block;</div><div class="line">    _launchOptions = [launchOptions copy];</div><div class="line"></div><div class="line">    [self setUp];</div><div class="line">    //reload key &apos;R&apos;</div><div class="line">    RCTExecuteOnMainQueue(^&#123; [self bindKeys]; &#125;);</div><div class="line">  &#125;</div><div class="line">  return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对于 RCTExecuteOnMainQueue 这个是在主线程中，当运行设备是模拟器的时候，绑定 ‘R’ 键作为 reload 的作用。<strong>TODO:这个可以再细致一点</strong></p>
+<p>我们主要看下 <code>[self setUp];</code> 这个方法。有一些基础的类的创建和 bundle 的相关处理。然后这里我们看到它又创建了一个 BatchedBridge。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[self createBatchedBridge];</div><div class="line">[self.batchedBridge start];</div></pre></td></tr></table></figure>
+<p>在 createBatchedBridge 函数中，它有创建了一个 RCTBatchedBridge 类型的属性变量 batchedBridge ，并且弱引用这自己。这个 RCTBatchedBridge 是 RCTBridge 的子类。在他的初始化方法中，我们看到了一个比较感兴趣的东西 RCTDisplayLink 这个类，还维护了一个 保存 dispatch_block_t 的_pendingCalls 的数组。在创建并初始化完成之后，他就把这个 batch 设给了一个静态的变量。</p>
+<p>在 RCTDisplayLink 中我们发现了 RunLoop CADisplayLink 这些和刷新或者线程状态有关的类。在做初始化的时候，也只是创建了一个集合和 CADisplayLink 的相关设定，根据 Sel 的名字 _jsThreadUpdate 可以猜测是一个在屏幕固定的刷新时机，去调用 js 的执行。 这个一会来看 …</p>
+<p>回到上面创建完 batched，那下面直接调用了 batchedBridge 的 start 函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (void)start</div><div class="line">&#123;</div><div class="line">  1.发送一个 RCTJavaScriptWillStartLoadingNotification 的消息给 root 的 bridge。</div><div class="line">  2.创建一个并行的队列 com.facebook.react.RCTBridgeQueue，然后异步的去加载源代码。</div><div class="line">  3.这里我们看到 -loadSource:onProgress 函数中，出现了新的类 RCTJavaScriptLoader ，看名字猜意思，大概作用就是加载 js 吧。看到里面做了一些检查最后把 bundle 指向的文件转成 data 了,赋值给了 sourceCode。</div><div class="line">  4.然后接着就同步的去初始化所有的不能懒加载的 native 模块。此时的 delegate 是 nil、modelProvider 也是 nil。</div><div class="line">  5.在bridgeQueue中异步初始化 JS executor 统一建立一个 group</div><div class="line">  6.异步对模块进行配置</div><div class="line">  7.最后上面的做完，开始执行 sourceCode</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="step-4"><a href="#Step-4" class="headerlink" title="Step 4"></a>Step 4</h3><p>这里在第4步去初始化本地代码的时候, 此时的 delegate 是 nil、modelProvider 也是 nil。所以也就跳过了上面的循环函数。去初始化 _javaScriptExecutor ，它是一个 RCTJSCExecutor 的类。扫了一下这个类的属性和引用，发现它引用了 JSCore、包含了一个线程变量_javaScriptThread、一个RCTJavaScriptContext 变量 _context，看作者对类的描述 使用了一个 JavaScriptCore 的上下文来作为执行的引擎。看了一下这个js线程的优先级适合主线程一样的，用添加源的方式启动了该线程的 runloop。</p>
+<p>准备了3个容器来装载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">NSMutableArray&lt;Class&gt; *moduleClassesByID = [NSMutableArray new];</div><div class="line">NSMutableArray&lt;RCTModuleData *&gt; *moduleDataByID = [NSMutableArray new];</div><div class="line">NSMutableDictionary&lt;NSString *, RCTModuleData *&gt; *moduleDataByName = [NSMutableDictionary new];</div></pre></td></tr></table></figure>
+<p>上面只有 _javaScriptExecutor 被添加进去。</p>
+<p>然后就对注册的 module 进行添加操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">for (Class moduleClass in RCTGetModuleClasses()) &#123;</div><div class="line">    NSString *moduleName = RCTBridgeModuleNameForClass(moduleClass);</div><div class="line">    // Check for module name collisions</div><div class="line">    RCTModuleData *moduleData = moduleDataByName[moduleName];</div><div class="line">    ...</div><div class="line"></div><div class="line">    // Instantiate moduleData (TODO: can we defer this until config generation?)</div><div class="line">    moduleData = [[RCTModuleData alloc] initWithModuleClass:moduleClass</div><div class="line">                                                     bridge:self];</div><div class="line">    moduleDataByName[moduleName] = moduleData;</div><div class="line">    [moduleClassesByID addObject:moduleClass];</div><div class="line">    [moduleDataByID addObject:moduleData];</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>这里 RCTGetModuleClasses 操作的是一个静态数组，它对 标志了 RCT_EXPORT_MODULE 这个宏的类在 load 的时候，添加到静态数组中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#define RCT_EXPORT_MODULE(js_name) \</div><div class="line">RCT_EXTERN void RCTRegisterModule(Class); \</div><div class="line">+ (NSString *)moduleName &#123; return @#js_name; &#125; \</div><div class="line">+ (void)load &#123; RCTRegisterModule(self); &#125;</div><div class="line"></div><div class="line">void RCTRegisterModule(Class moduleClass);</div><div class="line">void RCTRegisterModule(Class moduleClass)</div><div class="line">&#123;</div><div class="line">  ...</div><div class="line">   // Register module</div><div class="line">  [RCTModuleClasses addObject:moduleClass];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里来看一下封装了 moduleClass 和 bridge 引用的一个类 RCTModuleData。这个类提供两个初始化方法分别对应实例参数的初始化和类参数的初始化。在两个初始化方法中都调用了 setUp 方法。用来判断是否重写了 init 和 constantsToExport 方法。如果重写了就意味着可能需要在主线程中去初始化这个实例，因为他可能用到了 UIKit 相关的东西。</p>
+<p>回到👆上面，在存储了模块之后，去做一些预初始化的事情</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">for (RCTModuleData *moduleData in _moduleDataByID) &#123;</div><div class="line">	这里的判断条件 就是刚刚在 setUp 中提供的</div><div class="line">    if (moduleData.hasInstance &amp;&amp;</div><div class="line">        (!moduleData.requiresMainQueueSetup || RCTIsMainQueue())) &#123;</div><div class="line">            (void)[moduleData instance];</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">...</div><div class="line"></div><div class="line">[self setUpInstanceAndBridge]; </div><div class="line">对刚刚通过类参数创建 RCTModuleData 的实例进行一系列的判断，创建一个类参数的实例</div><div class="line"></div><div class="line">RCTProfileHookInstance(_instance);</div><div class="line">这个函数，目前还不会进入。但是函数中用运行时创建了一个 _instance 所属类的子类。并替换了 _instance 的类类型。__TODO__:这个先放一下</div><div class="line"></div><div class="line">[self setBridgeForInstance];</div><div class="line">最后用 KVC 设定了 _instance 对 bridge 的引用。</div><div class="line"></div><div class="line">[self prepareModulesWithDispatchGroup:dispatchGroup];</div><div class="line">在主线程中执行有需要的类实例。</div></pre></td></tr></table></figure>
+<h3 id="step-5"><a href="#Step-5" class="headerlink" title="Step 5"></a>Step 5</h3><p>再回到 -start 函数的第5点，执行了 [weakSelf setUpExecutor]; 这里的 _javaScriptExecutor 他是 RCTJSCExecutor 类型的。接着调用了他的 setUp 方法，主要是创建了 JS 的执行环境 context。没有用custom的 JSLib，所以最后调用了 <code>facebook::react::systemJSCWrapper()</code>。然后在 context 上注册了一些常用的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];</div><div class="line">if (!threadDictionary[RCTFBJSContextClassKey] || !threadDictionary[RCTFBJSValueClassKey]) &#123;</div><div class="line">      threadDictionary[RCTFBJSContextClassKey] = JSC_JSContext(contextRef);</div><div class="line">      threadDictionary[RCTFBJSValueClassKey] = JSC_JSValue(contextRef);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>把 JSContext 的存在线程字典中。</p>
+<div align="center"><br><img src="/2017/11/15/React-Native-笔记-一/数据走向.png" width="1015" height="586" alt="数据走向" align="center/"><br></div>
+
+
+<p>待补充…</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码阅读/" rel="tag"># 源码阅读</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/14/11-14-号晚/" rel="next" title="11/14 号晚">
+                <i class="fa fa-chevron-left"></i> 11/14 号晚
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/favicon.ico"
+               alt="小山河" />
+          <p class="site-author-name" itemprop="name">小山河</p>
+           
+              <p class="site-description motion-element" itemprop="description">Life goes on</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#rn-源码跟踪"><span class="nav-number">1.</span> <span class="nav-text">RN 源码跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#入口"><span class="nav-number">1.1.</span> <span class="nav-text">入口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step-4"><span class="nav-number">1.1.1.</span> <span class="nav-text">Step 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-5"><span class="nav-number">1.1.2.</span> <span class="nav-text">Step 5</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小山河</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://zjbpha.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/11/15/React-Native-笔记-一/';
+          this.page.identifier = '2017/11/15/React-Native-笔记-一/';
+          this.page.title = 'React Native 笔记 一';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://zjbpha.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
