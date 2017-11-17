@@ -1,0 +1,952 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="阅读笔记," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="为什么读这本书？  swift 某些方面和他很像培养函数式编程思想函子">
+<meta name="keywords" content="阅读笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="B10-Haskell趣味指南">
+<meta property="og:url" content="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/index.html">
+<meta property="og:site_name" content="小山河">
+<meta property="og:description" content="为什么读这本书？  swift 某些方面和他很像培养函数式编程思想函子">
+<meta property="og:image" content="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/list_monster.png">
+<meta property="og:updated_time" content="2017-11-17T03:53:37.253Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="B10-Haskell趣味指南">
+<meta name="twitter:description" content="为什么读这本书？  swift 某些方面和他很像培养函数式编程思想函子">
+<meta name="twitter:image" content="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/list_monster.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/"/>
+
+
+
+
+
+  <title>B10-Haskell趣味指南 | 小山河</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?58dc8367843d65b8486545ec53b4a483";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小山河</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小山河">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小山河">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">B10-Haskell趣味指南</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-15T16:41:56+08:00">
+                2017-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/阅读笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">阅读笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/15/RAC源码学习-二-Haskell/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/11/15/RAC源码学习-二-Haskell/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>为什么读这本书？</p>
+<blockquote>
+<p>swift 某些方面和他很像<br>培养函数式编程思想<br>函子</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="从零开始"><a href="#从零开始" class="headerlink" title="从零开始"></a>从零开始</h2><h3 id="list-入门"><a href="#List-入门" class="headerlink" title="List 入门"></a>List 入门</h3><p>两个List合并操作，通过 ++ 运算子实现。缺点会遍历整个List</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; [1,2,3,4] ++ [9,10,11,12]</div><div class="line">[1,2,3,4,9,10,11,12]</div></pre></td></tr></table></figure>
+<p>用 : 运算子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; &apos;A&apos;:&quot;SMALL CAT&quot;</div><div class="line">A SMALL CAT</div></pre></td></tr></table></figure>
+<p>按照索引取得 List 中的元素，可以使用 !! 运算子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; &quot;Steve Buscemi&quot; !! 6</div><div class="line">&apos;B&apos;</div></pre></td></tr></table></figure>
+<p>List 的 &gt; 和 &gt;= 运算符 是卓个元素比较</p>
+<div align="center"><br><img src="/2017/11/15/RAC源码学习-二-Haskell/list_monster.png" width="432" height="218" alt="内存分部图" align="center/"><br></div>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ghci&gt; head [5,4,3,2,1] </div><div class="line">5</div><div class="line">ghci&gt; tail [5,4,3,2,1] </div><div class="line">[4,3,2,1]</div><div class="line">ghci&gt; last [5,4,3,2,1] </div><div class="line">1</div><div class="line">ghci&gt; init [5,4,3,2,1] </div><div class="line">[5,4,3,2]</div><div class="line">ghci&gt; length [5,4,3,2,1] </div><div class="line">5</div></pre></td></tr></table></figure>
+<p>用 null 去检查 List 是否空，不要用[]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ghci&gt; null [1,2,3] </div><div class="line">False </div><div class="line">ghci&gt; null [] </div><div class="line">True</div></pre></td></tr></table></figure>
+<p>reverse将一个 List 反转<br>take 返回一个 List 的前几个元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ghci&gt; take 3 [5,4,3,2,1] </div><div class="line">[5,4,3] </div><div class="line">ghci&gt; take 1 [3,9,3] </div><div class="line">[3] </div><div class="line">ghci&gt; take 5 [1,2] </div><div class="line">[1,2] </div><div class="line">ghci&gt; take 0 [6,6,6] </div><div class="line">[]</div></pre></td></tr></table></figure>
+<p>drop 他会删除 List 中的前几个元素<br>maximum 返回一个 List 中最大的那个元素。minimun 返回最小的<br>sum 返回一个 List 中所有元素的和。product 返回一个 List 中所有元素的和。<br>elem 判断一个元素是否在包含于一个 List，通常以中缀函数的形式调 用它。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ghci&gt; 4 `elem` [3,4,5,6] </div><div class="line">True </div><div class="line">ghci&gt; 10 `elem` [3,4,5,6] </div><div class="line">False</div></pre></td></tr></table></figure>
+<p>Range 是构造 List 方法之一，提供步长设定。避免在Range中使用浮点数。<br>取前24个13的倍数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">take 24 [13,26..]</div></pre></td></tr></table></figure>
+<p>关于 cycle 函数，接受一个 List 做参数并返回一个无线的 List</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ghci&gt; take 10 (cycle [1,2,3]) </div><div class="line">[1,2,3,1,2,3,1,2,3,1] </div><div class="line">ghci&gt; take 12 (cycle &quot;LOL &quot;) </div><div class="line">&quot;LOL LOL LOL &quot;</div></pre></td></tr></table></figure>
+<p>关于 repeat 函数，接受一个值做参数并返回一个该值的无限 List </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; take 10 (repeat 5)</div><div class="line">[5,5,5,5,5,5,5,5,5,5]</div></pre></td></tr></table></figure>
+<p>关于 replicate 函数，返回包含相同元素的 List</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; replicate 3 10 </div><div class="line">[10,10,10]</div></pre></td></tr></table></figure>
+<p>关于 List Comprehension ,类似数学中的集合表达式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ghci&gt; [x*2 | x &lt;- [1..10]] </div><div class="line">[2,4,6,8,10,12,14,16,18,20]</div><div class="line"></div><div class="line">ghci&gt; [x*2 | x &lt;- [1..10], x*2 &gt;= 12] </div><div class="line">[12,14,16,18,20]</div></pre></td></tr></table></figure>
+<p>Tuple 元组 存储不同类型的数据单元<br>关于 fst 函数，将返回一个序对的首项<br>关于 snd 函数，将返回一个序对的尾项<br>上面两个函数仅对序列对(Pair)有效。        </p>
+<p>关于 zip 函数，用来生成一组序对(Pair)的 List。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ghci&gt; zip [1,2,3,4,5] [5,5,5,5,5] </div><div class="line">[(1,5),(2,5),(3,5),(4,5),(5,5)] </div><div class="line">ghci&gt; zip [1 .. 5] [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;]</div><div class="line">[(1,&quot;one&quot;),(2,&quot;two&quot;),(3,&quot;three&quot;),(4,&quot;four&quot;),(5,&quot;five&quot;)]</div></pre></td></tr></table></figure>
+<h2 id="typed-and-typeclasses"><a href="#Typed-and-Typeclasses" class="headerlink" title="Typed and Typeclasses"></a>Typed and Typeclasses</h2><p>Typed 理解为类型 Typeclasses 理解为通用接口</p>
+<p>:t 命令后跟任何可用的表达式，即可得到该表达式的类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">addThree :: Int -&gt; Int -&gt; Int -&gt; Int </div><div class="line">addThree x y z = x + y + z</div></pre></td></tr></table></figure>
+<p>=&gt; 符号，他左边的部分叫做类型约束。相等函数取两个相同类型的值作为参数并返回一个布林值，而这两个参数的类型同在 Eq 类之中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; :t (==) </div><div class="line">(==) :: (Eq a) =&gt; a -&gt; a -&gt; Bool</div></pre></td></tr></table></figure>
+<p>Show 的成员为可用的字符串。有点像类型转换字符串。常用函数表示 show。它可以取任一 Show 的成员类型并将其转为字符串。<br>Read 是和 Show 相反的 Typeclass。ghci通过调用 read 后面跟的那部分来确定其类型。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ghci&gt; read &quot;[1,2,3,4]&quot; ++ [3] </div><div class="line">[1,2,3,4,3]</div><div class="line">ghci&gt; read &quot;4&quot;  </div><div class="line">报错</div><div class="line">ghci&gt; read &quot;5&quot; :: Int </div><div class="line">5</div></pre></td></tr></table></figure>
+<h2 id="函数的语法"><a href="#函数的语法" class="headerlink" title="函数的语法"></a>函数的语法</h2><h3 id="pattern-matching"><a href="#Pattern-matching" class="headerlink" title="Pattern matching"></a>Pattern matching</h3><p><strong>函数的模式匹配</strong></p>
+<p><strong>List 的模式匹配</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sum&apos; :: (Num a) =&gt; [a] -&gt; a</div><div class="line">sum&apos; [] = 0</div><div class="line">sum&apos; (x:xs) = x + sum&apos; xs</div></pre></td></tr></table></figure>
+<p>重定义一个 sum‘ 函数，它的类型是 <code>[a] -&gt; a</code> ,其中 a 满足 Num 的类型约束。下面是模式匹配，第一个是特定类型匹配，最后一个是通用类型匹配。</p>
+<p>还有一种 as 模式。如 xs@(x:y:ys)  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">capital :: String -&gt; String </div><div class="line">capital &quot;&quot; = &quot;Empty string, whoops!&quot;</div><div class="line">capital all@(x:xs) = &quot;The first letter of &quot; ++ all ++ &quot; is &quot; ++ [x]</div></pre></td></tr></table></figure>
+<p>使用 as 模式通常就是为了在较大的模式中保留对整体的引用，减少重复性的工作</p>
+<p><strong>Guards</strong></p>
+<p>guard 由跟在函数名及参数后面的竖线标志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">myCompare :: (Ord a) =&gt; a -&gt; a -&gt; Ordering </div><div class="line">a `myCompare` b</div><div class="line"></div><div class="line">| a &gt; b = GT </div><div class="line">| a == b = EQ </div><div class="line">| otherwise = LT</div></pre></td></tr></table></figure>
+<p><strong>where</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">bmiTell :: (RealFloat a) =&gt; a -&gt; a -&gt; String </div><div class="line">bmiTell weight height</div><div class="line">	| bmi &lt;= skinny = &quot;You&apos;re underweight, you emo, you!&quot;</div><div class="line">	| bmi &lt;= normal = &quot;You&apos;re supposedly normal. Pffft, I bet you&apos;re ugly!&quot; | bmi &lt;= fat = &quot;You&apos;re fat! Lose some weight, fatty!&quot;</div><div class="line">	| otherwise = &quot;You&apos;re a whale, congratulations!&quot;</div><div class="line">	where bmi = weight / height ^ 2</div><div class="line">		   skinny = 18.5</div><div class="line">		   normal = 25.0</div><div class="line">		   fat = 30.0</div><div class="line">		   </div><div class="line">		   </div><div class="line">initials :: String -&gt; String -&gt; String </div><div class="line">initials firstname lastname = [f] ++ &quot;. &quot; ++ [l] ++ &quot;.&quot;</div><div class="line">	where (f:_) = firstname </div><div class="line">         (l:_) = lastname</div></pre></td></tr></table></figure>
+<p><strong>let</strong></p>
+<p>let 的格式为 let [bindings] in [expressions]。在 let 中绑定的名字仅对 in 部分可见。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cylinder :: (RealFloat a) =&gt; a -&gt; a -&gt; a </div><div class="line">cylinder r h =</div><div class="line">	let sideArea = 2 * pi * r * h </div><div class="line">	topArea = pi * r ^2 </div><div class="line">	in sideArea + 2 * topArea</div></pre></td></tr></table></figure>
+<p>let 绑定本身是个表达式，而 where 绑定则是个语法结构。if 语句也是一个表达式。</p>
+<p><strong>Case expressions</strong></p>
+<p>case ‘表达式’的语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">case expression of pattern -&gt; result  </div><div class="line">pattern -&gt; result </div><div class="line">pattern -&gt; result </div><div class="line">...</div></pre></td></tr></table></figure>
+<h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><h3 id="实现-maximum"><a href="#实现-Maximum" class="headerlink" title="实现 Maximum"></a>实现 Maximum</h3><p>主要就是，寻找问题中的关系的过程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function Maximum&apos; </div><div class="line">	| [] []</div><div class="line">	| [x:xs] if x &gt; Maximum&apos; xs return x else return Maximum&apos; xs</div></pre></td></tr></table></figure>
+<p>固定模式：先定义一个边界条件，再定义个函数，让它从一堆元素中取一个并做点事情后，把余下的元素重新交给这个函数。</p>
+<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>Haskell 惰性特征</p>
+<h3 id="map-和-filter"><a href="#map-和-filter" class="headerlink" title="map 和 filter"></a>map 和 filter</h3><h3 id="lambda"><a href="#lambda" class="headerlink" title="lambda"></a>lambda</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ghci&gt; map (\(a,b) -&gt; a + b) [(1,2),(3,5),(6,3),(2,6),(2,5)] </div><div class="line">[3,8,9,8,7]</div></pre></td></tr></table></figure>
+<h3 id="fold"><a href="#fold" class="headerlink" title="fold"></a>fold</h3><p>一个 fold 取一个二元函数，一个初始值 (我喜欢管它叫累加值) 和一个 需要折叠的 List。<br>首先看下 foldl 函数，也叫做左折叠。     </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sum&apos; :: (Num a) =&gt; [a] -&gt; a </div><div class="line">sum&apos; xs = foldl (\acc x -&gt; acc + x) 0 xs</div></pre></td></tr></table></figure>
+<p>右折叠 foldr 的行为与左折叠相似，只是累加值从 List 的右边开始。    </p>
+<p>对于左折叠和右折叠的选择，对于使用(++)往 List 后面追加元素的效率比使用(:)低得多。    </p>
+<p>foldl1 与 foldr1 的行为与 foldl 和 foldr 相似，只是你无需明确提供 初始值。他们假定 List 的首个 (或末尾) 元素作为起始值，并从旁边的元素 开始折叠。<br>scanl 和 scanr 与 foldl 和 foldr 相似，只是它们会记录下累加值的 所有状态到一个 List。也有 scanl1 和 scanr1。</p>
+<p>看 $ 函数。它也叫作函数调用符。$ 函数调用符的优先级最低。<br>试想有 这个表达式：sum (map sqrt [1..130])。由于低优先级的 $，我们可以将 其改为 sum $ map sqrt [1..130]</p>
+<h3 id="function-composition"><a href="#Function-composition" class="headerlink" title="Function composition"></a>Function composition</h3><p>函数的组合 . (f#g)(x) = f(g(x)); 函数组合是右结合的。表达式 f(g(z(x))) 与 (f . g . z) x 等价。</p>
+<h2 id="模组-modules"><a href="#模组-Modules" class="headerlink" title="模组 (Modules)"></a>模组 (Modules)</h2><p>:m 装载模组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ghci&gt; :m Data.List</div><div class="line">ghci&gt; :m Data.List Data.Map Data.Set</div><div class="line">仅装载 Data.List 模组 nub 和 sort </div><div class="line">import Data.List (nub，sort)</div><div class="line">装载 Data.List 模组时，把 nub 除掉</div><div class="line">import Data.List hiding (nub)</div><div class="line">避免重名函数装载 在调用模组函数时，需要指定作用域 Data.Map.filter</div><div class="line">import qualified Data.Map</div><div class="line">可以用别名，调用 filter 直接 M.filter</div><div class="line">import qualified Data.Map as M</div></pre></td></tr></table></figure>
+<h3 id="datalist"><a href="#Data-List" class="headerlink" title="Data.List"></a>Data.List</h3><p>intersperse 取一个元素与 List 作参数，并将该元素置于 List 中每对元素的中间                </p>
+<pre><code>ghci&gt; intersperse &apos;.&apos; &quot;MONKEY&quot; 
+&quot;M.O.N.K.E.Y&quot; 
+ghci&gt; intersperse 0 [1,2,3,4,5,6] 
+[1,0,2,0,3,0,4,0,5,0,6]
+</code></pre><p>intercalate取两个List作参数.它会将第一个 List 交叉插入第二个 List中间，并返回一个 List.</p>
+<pre><code>ghci&gt; intercalate &quot; &quot; [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] 
+&quot;hey there guys&quot; 
+ghci&gt; intercalate [0,0,0] [[1,2,3],[4,5,6],[7,8,9]] 
+[1,2,3,0,0,0,4,5,6,0,0,0,7,8,9]
+</code></pre><p>这里 transpose 函数可以反转一组 List 的 List。</p>
+<pre><code>ghci&gt; transpose [[1,2,3],[4,5,6],[7,8,9]] 
+[[1,4,7],[2,5,8],[3,6,9]] 
+
+ghci&gt; transpose [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] 
+[&quot;htg&quot;,&quot;ehu&quot;,&quot;yey&quot;,&quot;rs&quot;,&quot;e&quot;]
+</code></pre><p>这里concat 把一组 List 连接为一个 List。</p>
+<pre><code>ghci&gt; concat [&quot;foo&quot;,&quot;bar&quot;,&quot;car&quot;] 
+&quot;foobarcar&quot; 
+
+ghci&gt; concat [[3,4,5],[2,3,4],[2,1,1]] 
+[3,4,5,2,3,4,2,1,1]
+</code></pre><p>concatMap 函数与 map 一个 List 之后再 concat 它等价。</p>
+<pre><code>ghci&gt; concatMap (replicate 4) [1..3] 
+[1,1,1,1,2,2,2,2,3,3,3,3]
+</code></pre><p><strong>比较多的函数介绍</strong></p>
+<h2 id="构造我们自己的-types-和-typeclasses"><a href="#构造我们自己的-Types-和-Typeclasses" class="headerlink" title="构造我们自己的 Types 和 Typeclasses"></a>构造我们自己的 Types 和 Typeclasses</h2><h3 id="algebraic-data-types"><a href="#Algebraic-Data-Types" class="headerlink" title="Algebraic Data Types"></a>Algebraic Data Types</h3><p>定义一个自己的 Types</p>
+<p><code>data Bool = False | True</code>        </p>
+<p>data 表示我们要定义一个新的类型。= 的左端标明类型的名称即 Bool， = 的右端就是值构造子 (Value Constructor)，它们明确了该类型可能的值。| 读作 “或”，所以可以这样阅读该声明：Bool 类型的值可以是 True 或 False。 类型名和值构造子的首字母必大写。</p>
+<h3 id="record-syntax"><a href="#Record-Syntax" class="headerlink" title="Record Syntax"></a>Record Syntax</h3><pre><code>至少 data 声明的时候看上去有点变扭，没有属性名。
+data Person = Person String String Int Float String String deriving (Show)
+这样好多了
+data Person = Person { firstName :: String , 
+                            lastName :: String , 
+                            age :: Int , 
+                            height :: Float , 
+                            phoneNumber :: String , 
+                            flavor :: String } deriving (Show)
+</code></pre><h3 id="type-parameters"><a href="#Type-parameters" class="headerlink" title="Type parameters"></a>Type parameters</h3><p>泛型的概念</p>
+<pre><code>data Car = Car { company :: String , model :: String , year :: Int } deriving (Show)
+
+改成
+
+data Car a b c = Car { company :: a , model :: b , year :: c } deriving (Show)
+</code></pre><p>不要在 data 声明中添加类型约束。<br>类型构造子 = 值构造子</p>
+<pre><code>data Vector a = Vector a a a deriving (Show)
+</code></pre><h3 id="derived-instances"><a href="#Derived-instances" class="headerlink" title="Derived instances"></a>Derived instances</h3><p>类型类理解为接口，定义约束类的统一行为特征。                                           </p>
+<pre><code>data Person = Person { firstName :: String , lastName :: String , age :: Int } deriving (Eq, Show, Read)
+</code></pre><p>其中 deriving 就是在值构造子这边声明他行为继承与 Eq。<br>Show 和 Read 是互对的行为，需要注意的是 Read 转化为特定类型的时候需要制定类型，或有明确的类型推断提供。不可以 <code>read &quot;Just &#39;t&#39;&quot; :: Maybe a</code> 这样的。 </p>
+<h3 id="type-synonyms"><a href="#Type-synonyms" class="headerlink" title="Type synonyms"></a>Type synonyms</h3><p>别名 <code>type String = [Char]</code> 比较好理解。                            </p>
+<p>对比一下,更加易读                        </p>
+<pre><code>type PhoneNumber = String 
+type Name = String 
+type PhoneBook = [(Name,PhoneNumber)]
+
+inPhoneBook :: Name -&gt; PhoneNumber -&gt; PhoneBook -&gt; Bool 
+inPhoneBook name pnumber pbook = (name,pnumber) `elem` pbook
+
+VS
+
+inPhoneBook :: String -&gt; String -&gt; [(String ,String)] -&gt; Bool
+</code></pre><h3 id="recursive-data-structures"><a href="#Recursive-data-structures" class="headerlink" title="Recursive data structures"></a>Recursive data structures</h3><p>递归定义数据结构,以 List 为例子         </p>
+<pre><code>data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)
+data List a = Empty | Cons { listHead :: a, listTail :: List a} deriving (Show, Read, Eq, Ord)
+con 就是指 : 
+伪代码
+data List a = Empty | a : (List a) deriving (Show, Read, Eq, Ord)
+</code></pre><p>ﬁxity 指定了他应该是 leftassociative 或是 right-associative，还有他的优先级。             </p>
+<pre><code>infixr 5 :-:
+data List a = Empty | a :-: (List a) deriving (Show, Read, Eq, Ord)
+</code></pre><p>定义自己的 typeclass 相当于 interface。          </p>
+<pre><code>class Eq a where
+    (==) :: a -&gt; a -&gt; Bool 
+    (/=) :: a -&gt; a -&gt; Bool 
+    x == y = not (x /= y) 
+    x /= y = not (x == y)
+</code></pre><p>class Eq a where 表示定义一个新的 typeclass 叫做 Eq，a 是一个泛型。                   </p>
+<pre><code>instance Eq TrafficLight where 
+    Red == Red = True 
+    Green == Green = True 
+    Yellow == Yellow = True 
+    _ == _ = False
+</code></pre><p>instance 就是去实现特定类型的接口行为，他的行为可能直接的实现方式是 deriving(Eq)。        </p>
+<h3 id="yes-no-typeclass"><a href="#yes-no-typeclass" class="headerlink" title="yes-no typeclass"></a>yes-no typeclass</h3><p>主要是接口的定义和具体类的实现。模仿了 JavaScript 弱类型的语言对 Bool 值的转化。        </p>
+<pre><code>class YesNo a where
+    yeasno :: a -&gt; Bool
+
+instance YesNo Int where
+    yesno 0 = False
+    yesno _ = True
+</code></pre><h3 id="functor-typeclass"><a href="#Functor-typeclass" class="headerlink" title="Functor typeclass"></a>Functor typeclass</h3><p>Functor 的定义 ，f 是一个<strong>类型构造子</strong>，他接受一个类型。比如 [a] 已经是一个具体的类型，其中 [] 是一个类型构造子。                          </p>
+<pre><code>class Functor f where 
+    fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre><h3 id="kind"><a href="#Kind" class="headerlink" title="Kind"></a>Kind</h3><!--输入与输出
+
+函数式地思考来解决问题
+运用逆波兰表达法
+
+逆波兰式，把运算对象堆叠在一起，当遇到运算符的时候将最近的两个对象做运算，在放到堆上。-->
+<h2 id="functorsapplicative-functors-与monoids"><a href="#Functors-Applicative-Functors-与Monoids" class="headerlink" title="Functors,Applicative Functors 与Monoids"></a>Functors,Applicative Functors 与Monoids</h2><p>有篇文章更直观一些中文<sup><a href="[http://jiyinyiyong.github.io/monads-in-pictures/]">1</a></sup>英文<sup><a href="[http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html]">2</a></sup></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/阅读笔记/" rel="tag"># 阅读笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/15/React-Native-笔记-一/" rel="next" title="React Native 笔记 一">
+                <i class="fa fa-chevron-left"></i> React Native 笔记 一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/favicon.ico"
+               alt="小山河" />
+          <p class="site-author-name" itemprop="name">小山河</p>
+           
+              <p class="site-description motion-element" itemprop="description">Life goes on</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从零开始"><span class="nav-number">1.</span> <span class="nav-text">从零开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#list-入门"><span class="nav-number">1.1.</span> <span class="nav-text">List 入门</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typed-and-typeclasses"><span class="nav-number">2.</span> <span class="nav-text">Typed and Typeclasses</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数的语法"><span class="nav-number">3.</span> <span class="nav-text">函数的语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pattern-matching"><span class="nav-number">3.1.</span> <span class="nav-text">Pattern matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归"><span class="nav-number">4.</span> <span class="nav-text">递归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-maximum"><span class="nav-number">4.1.</span> <span class="nav-text">实现 Maximum</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高阶函数"><span class="nav-number">5.</span> <span class="nav-text">高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-和-filter"><span class="nav-number">5.1.</span> <span class="nav-text">map 和 filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda"><span class="nav-number">5.2.</span> <span class="nav-text">lambda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fold"><span class="nav-number">5.3.</span> <span class="nav-text">fold</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function-composition"><span class="nav-number">5.4.</span> <span class="nav-text">Function composition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模组-modules"><span class="nav-number">6.</span> <span class="nav-text">模组 (Modules)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datalist"><span class="nav-number">6.1.</span> <span class="nav-text">Data.List</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造我们自己的-types-和-typeclasses"><span class="nav-number">7.</span> <span class="nav-text">构造我们自己的 Types 和 Typeclasses</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#algebraic-data-types"><span class="nav-number">7.1.</span> <span class="nav-text">Algebraic Data Types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#record-syntax"><span class="nav-number">7.2.</span> <span class="nav-text">Record Syntax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-parameters"><span class="nav-number">7.3.</span> <span class="nav-text">Type parameters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derived-instances"><span class="nav-number">7.4.</span> <span class="nav-text">Derived instances</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-synonyms"><span class="nav-number">7.5.</span> <span class="nav-text">Type synonyms</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recursive-data-structures"><span class="nav-number">7.6.</span> <span class="nav-text">Recursive data structures</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yes-no-typeclass"><span class="nav-number">7.7.</span> <span class="nav-text">yes-no typeclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#functor-typeclass"><span class="nav-number">7.8.</span> <span class="nav-text">Functor typeclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kind"><span class="nav-number">7.9.</span> <span class="nav-text">Kind</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#functorsapplicative-functors-与monoids"><span class="nav-number">8.</span> <span class="nav-text">Functors,Applicative Functors 与Monoids</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小山河</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://zjbpha.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/';
+          this.page.identifier = '2017/11/15/RAC源码学习-二-Haskell/';
+          this.page.title = 'B10-Haskell趣味指南';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://zjbpha.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
