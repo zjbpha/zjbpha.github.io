@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="小山河">
 <meta property="og:description" content="为什么读这本书？  swift 某些方面和他很像培养函数式编程思想函子">
 <meta property="og:image" content="http://yoursite.com/2017/11/15/RAC源码学习-二-Haskell/list_monster.png">
-<meta property="og:updated_time" content="2017-11-17T03:53:37.253Z">
+<meta property="og:updated_time" content="2017-11-20T23:02:53.930Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="B10-Haskell趣味指南">
 <meta name="twitter:description" content="为什么读这本书？  swift 某些方面和他很像培养函数式编程思想函子">
@@ -457,105 +457,9 @@
 <h2 id="模组-modules"><a href="#模组-Modules" class="headerlink" title="模组 (Modules)"></a>模组 (Modules)</h2><p>:m 装载模组</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ghci&gt; :m Data.List</div><div class="line">ghci&gt; :m Data.List Data.Map Data.Set</div><div class="line">仅装载 Data.List 模组 nub 和 sort </div><div class="line">import Data.List (nub，sort)</div><div class="line">装载 Data.List 模组时，把 nub 除掉</div><div class="line">import Data.List hiding (nub)</div><div class="line">避免重名函数装载 在调用模组函数时，需要指定作用域 Data.Map.filter</div><div class="line">import qualified Data.Map</div><div class="line">可以用别名，调用 filter 直接 M.filter</div><div class="line">import qualified Data.Map as M</div></pre></td></tr></table></figure>
 <h3 id="datalist"><a href="#Data-List" class="headerlink" title="Data.List"></a>Data.List</h3><p>intersperse 取一个元素与 List 作参数，并将该元素置于 List 中每对元素的中间                </p>
-<pre><code>ghci&gt; intersperse &apos;.&apos; &quot;MONKEY&quot; 
-&quot;M.O.N.K.E.Y&quot; 
-ghci&gt; intersperse 0 [1,2,3,4,5,6] 
-[1,0,2,0,3,0,4,0,5,0,6]
-</code></pre><p>intercalate取两个List作参数.它会将第一个 List 交叉插入第二个 List中间，并返回一个 List.</p>
-<pre><code>ghci&gt; intercalate &quot; &quot; [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] 
-&quot;hey there guys&quot; 
-ghci&gt; intercalate [0,0,0] [[1,2,3],[4,5,6],[7,8,9]] 
-[1,2,3,0,0,0,4,5,6,0,0,0,7,8,9]
-</code></pre><p>这里 transpose 函数可以反转一组 List 的 List。</p>
-<pre><code>ghci&gt; transpose [[1,2,3],[4,5,6],[7,8,9]] 
-[[1,4,7],[2,5,8],[3,6,9]] 
-
-ghci&gt; transpose [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] 
-[&quot;htg&quot;,&quot;ehu&quot;,&quot;yey&quot;,&quot;rs&quot;,&quot;e&quot;]
-</code></pre><p>这里concat 把一组 List 连接为一个 List。</p>
-<pre><code>ghci&gt; concat [&quot;foo&quot;,&quot;bar&quot;,&quot;car&quot;] 
-&quot;foobarcar&quot; 
-
-ghci&gt; concat [[3,4,5],[2,3,4],[2,1,1]] 
-[3,4,5,2,3,4,2,1,1]
-</code></pre><p>concatMap 函数与 map 一个 List 之后再 concat 它等价。</p>
-<pre><code>ghci&gt; concatMap (replicate 4) [1..3] 
-[1,1,1,1,2,2,2,2,3,3,3,3]
-</code></pre><p><strong>比较多的函数介绍</strong></p>
-<h2 id="构造我们自己的-types-和-typeclasses"><a href="#构造我们自己的-Types-和-Typeclasses" class="headerlink" title="构造我们自己的 Types 和 Typeclasses"></a>构造我们自己的 Types 和 Typeclasses</h2><h3 id="algebraic-data-types"><a href="#Algebraic-Data-Types" class="headerlink" title="Algebraic Data Types"></a>Algebraic Data Types</h3><p>定义一个自己的 Types</p>
-<p><code>data Bool = False | True</code>        </p>
-<p>data 表示我们要定义一个新的类型。= 的左端标明类型的名称即 Bool， = 的右端就是值构造子 (Value Constructor)，它们明确了该类型可能的值。| 读作 “或”，所以可以这样阅读该声明：Bool 类型的值可以是 True 或 False。 类型名和值构造子的首字母必大写。</p>
-<h3 id="record-syntax"><a href="#Record-Syntax" class="headerlink" title="Record Syntax"></a>Record Syntax</h3><pre><code>至少 data 声明的时候看上去有点变扭，没有属性名。
-data Person = Person String String Int Float String String deriving (Show)
-这样好多了
-data Person = Person { firstName :: String , 
-                            lastName :: String , 
-                            age :: Int , 
-                            height :: Float , 
-                            phoneNumber :: String , 
-                            flavor :: String } deriving (Show)
-</code></pre><h3 id="type-parameters"><a href="#Type-parameters" class="headerlink" title="Type parameters"></a>Type parameters</h3><p>泛型的概念</p>
-<pre><code>data Car = Car { company :: String , model :: String , year :: Int } deriving (Show)
-
-改成
-
-data Car a b c = Car { company :: a , model :: b , year :: c } deriving (Show)
-</code></pre><p>不要在 data 声明中添加类型约束。<br>类型构造子 = 值构造子</p>
-<pre><code>data Vector a = Vector a a a deriving (Show)
-</code></pre><h3 id="derived-instances"><a href="#Derived-instances" class="headerlink" title="Derived instances"></a>Derived instances</h3><p>类型类理解为接口，定义约束类的统一行为特征。                                           </p>
-<pre><code>data Person = Person { firstName :: String , lastName :: String , age :: Int } deriving (Eq, Show, Read)
-</code></pre><p>其中 deriving 就是在值构造子这边声明他行为继承与 Eq。<br>Show 和 Read 是互对的行为，需要注意的是 Read 转化为特定类型的时候需要制定类型，或有明确的类型推断提供。不可以 <code>read &quot;Just &#39;t&#39;&quot; :: Maybe a</code> 这样的。 </p>
-<h3 id="type-synonyms"><a href="#Type-synonyms" class="headerlink" title="Type synonyms"></a>Type synonyms</h3><p>别名 <code>type String = [Char]</code> 比较好理解。                            </p>
-<p>对比一下,更加易读                        </p>
-<pre><code>type PhoneNumber = String 
-type Name = String 
-type PhoneBook = [(Name,PhoneNumber)]
-
-inPhoneBook :: Name -&gt; PhoneNumber -&gt; PhoneBook -&gt; Bool 
-inPhoneBook name pnumber pbook = (name,pnumber) `elem` pbook
-
-VS
-
-inPhoneBook :: String -&gt; String -&gt; [(String ,String)] -&gt; Bool
-</code></pre><h3 id="recursive-data-structures"><a href="#Recursive-data-structures" class="headerlink" title="Recursive data structures"></a>Recursive data structures</h3><p>递归定义数据结构,以 List 为例子         </p>
-<pre><code>data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)
-data List a = Empty | Cons { listHead :: a, listTail :: List a} deriving (Show, Read, Eq, Ord)
-con 就是指 : 
-伪代码
-data List a = Empty | a : (List a) deriving (Show, Read, Eq, Ord)
-</code></pre><p>ﬁxity 指定了他应该是 leftassociative 或是 right-associative，还有他的优先级。             </p>
-<pre><code>infixr 5 :-:
-data List a = Empty | a :-: (List a) deriving (Show, Read, Eq, Ord)
-</code></pre><p>定义自己的 typeclass 相当于 interface。          </p>
-<pre><code>class Eq a where
-    (==) :: a -&gt; a -&gt; Bool 
-    (/=) :: a -&gt; a -&gt; Bool 
-    x == y = not (x /= y) 
-    x /= y = not (x == y)
-</code></pre><p>class Eq a where 表示定义一个新的 typeclass 叫做 Eq，a 是一个泛型。                   </p>
-<pre><code>instance Eq TrafficLight where 
-    Red == Red = True 
-    Green == Green = True 
-    Yellow == Yellow = True 
-    _ == _ = False
-</code></pre><p>instance 就是去实现特定类型的接口行为，他的行为可能直接的实现方式是 deriving(Eq)。        </p>
-<h3 id="yes-no-typeclass"><a href="#yes-no-typeclass" class="headerlink" title="yes-no typeclass"></a>yes-no typeclass</h3><p>主要是接口的定义和具体类的实现。模仿了 JavaScript 弱类型的语言对 Bool 值的转化。        </p>
-<pre><code>class YesNo a where
-    yeasno :: a -&gt; Bool
-
-instance YesNo Int where
-    yesno 0 = False
-    yesno _ = True
-</code></pre><h3 id="functor-typeclass"><a href="#Functor-typeclass" class="headerlink" title="Functor typeclass"></a>Functor typeclass</h3><p>Functor 的定义 ，f 是一个<strong>类型构造子</strong>，他接受一个类型。比如 [a] 已经是一个具体的类型，其中 [] 是一个类型构造子。                          </p>
-<pre><code>class Functor f where 
-    fmap :: (a -&gt; b) -&gt; f a -&gt; f b
-</code></pre><h3 id="kind"><a href="#Kind" class="headerlink" title="Kind"></a>Kind</h3><!--输入与输出
-
-函数式地思考来解决问题
-运用逆波兰表达法
-
-逆波兰式，把运算对象堆叠在一起，当遇到运算符的时候将最近的两个对象做运算，在放到堆上。-->
-<h2 id="functorsapplicative-functors-与monoids"><a href="#Functors-Applicative-Functors-与Monoids" class="headerlink" title="Functors,Applicative Functors 与Monoids"></a>Functors,Applicative Functors 与Monoids</h2><p>有篇文章更直观一些中文<sup><a href="[http://jiyinyiyong.github.io/monads-in-pictures/]">1</a></sup>英文<sup><a href="[http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html]">2</a></sup></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div></pre></td><td class="code"><pre><div class="line">ghci&gt; intersperse &apos;.&apos; &quot;MONKEY&quot; </div><div class="line">&quot;M.O.N.K.E.Y&quot; </div><div class="line">ghci&gt; intersperse 0 [1,2,3,4,5,6] </div><div class="line">[1,0,2,0,3,0,4,0,5,0,6]          </div><div class="line">```       </div><div class="line"></div><div class="line">intercalate取两个List作参数.它会将第一个 List 交叉插入第二个 List中间，并返回一个 List.</div><div class="line">```              </div><div class="line">ghci&gt; intercalate &quot; &quot; [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] </div><div class="line">&quot;hey there guys&quot; </div><div class="line">ghci&gt; intercalate [0,0,0] [[1,2,3],[4,5,6],[7,8,9]] </div><div class="line">[1,2,3,0,0,0,4,5,6,0,0,0,7,8,9]</div><div class="line">```                                </div><div class="line"></div><div class="line">这里 transpose 函数可以反转一组 List 的 List。</div><div class="line"></div><div class="line">```                   </div><div class="line">ghci&gt; transpose [[1,2,3],[4,5,6],[7,8,9]] </div><div class="line">[[1,4,7],[2,5,8],[3,6,9]] </div><div class="line"></div><div class="line">ghci&gt; transpose [&quot;hey&quot;,&quot;there&quot;,&quot;guys&quot;] </div><div class="line">[&quot;htg&quot;,&quot;ehu&quot;,&quot;yey&quot;,&quot;rs&quot;,&quot;e&quot;]       </div><div class="line">```                                           </div><div class="line"> </div><div class="line">这里concat 把一组 List 连接为一个 List。</div><div class="line"></div><div class="line">```                </div><div class="line">ghci&gt; concat [&quot;foo&quot;,&quot;bar&quot;,&quot;car&quot;] </div><div class="line">&quot;foobarcar&quot; </div><div class="line"></div><div class="line">ghci&gt; concat [[3,4,5],[2,3,4],[2,1,1]] </div><div class="line">[3,4,5,2,3,4,2,1,1]</div><div class="line">```             </div><div class="line"> </div><div class="line"></div><div class="line"></div><div class="line">concatMap 函数与 map 一个 List 之后再 concat 它等价。</div><div class="line"></div><div class="line">```             </div><div class="line">ghci&gt; concatMap (replicate 4) [1..3] </div><div class="line">[1,1,1,1,2,2,2,2,3,3,3,3]</div><div class="line">```          </div><div class="line"></div><div class="line">__比较多的函数介绍__</div><div class="line"></div><div class="line">## 构造我们自己的 Types 和 Typeclasses</div><div class="line">### Algebraic Data Types</div><div class="line"></div><div class="line">定义一个自己的 Types</div><div class="line"></div><div class="line">`data Bool = False | True`        </div><div class="line"></div><div class="line">data 表示我们要定义一个新的类型。= 的左端标明类型的名称即 Bool， = 的右端就是值构造子 (Value Constructor)，它们明确了该类型可能的值。| 读作 “或”，所以可以这样阅读该声明：Bool 类型的值可以是 True 或 False。 类型名和值构造子的首字母必大写。</div><div class="line"> </div><div class="line">### Record Syntax</div><div class="line"></div><div class="line">```             </div><div class="line">至少 data 声明的时候看上去有点变扭，没有属性名。</div><div class="line">data Person = Person String String Int Float String String deriving (Show)</div><div class="line">这样好多了</div><div class="line">data Person = Person &#123; firstName :: String , </div><div class="line">							lastName :: String , </div><div class="line">							age :: Int , </div><div class="line">							height :: Float , </div><div class="line">							phoneNumber :: String , </div><div class="line">							flavor :: String &#125; deriving (Show)</div><div class="line">```           </div><div class="line"></div><div class="line">### Type parameters</div><div class="line"></div><div class="line">泛型的概念</div><div class="line"></div><div class="line">```                </div><div class="line">data Car = Car &#123; company :: String , model :: String , year :: Int &#125; deriving (Show)</div><div class="line"></div><div class="line">改成</div><div class="line"></div><div class="line">data Car a b c = Car &#123; company :: a , model :: b , year :: c &#125; deriving (Show)</div><div class="line"></div><div class="line">```             </div><div class="line"></div><div class="line">不要在 data 声明中添加类型约束。</div><div class="line">类型构造子 = 值构造子</div><div class="line"></div><div class="line">```                                </div><div class="line">data Vector a = Vector a a a deriving (Show)          </div><div class="line">```               </div><div class="line"></div><div class="line">### Derived instances              </div><div class="line"></div><div class="line">类型类理解为接口，定义约束类的统一行为特征。                                           </div><div class="line"></div><div class="line">```         </div><div class="line">data Person = Person &#123; firstName :: String , lastName :: String , age :: Int &#125; deriving (Eq, Show, Read)</div><div class="line">```                     </div><div class="line"></div><div class="line">其中 deriving 就是在值构造子这边声明他行为继承与 Eq。          </div><div class="line">Show 和 Read 是互对的行为，需要注意的是 Read 转化为特定类型的时候需要制定类型，或有明确的类型推断提供。不可以 `read &quot;Just &apos;t&apos;&quot; :: Maybe a` 这样的。 </div><div class="line"></div><div class="line"></div><div class="line">### Type synonyms</div><div class="line"></div><div class="line">别名 `type String = [Char]` 比较好理解。                            </div><div class="line"></div><div class="line">对比一下,更加易读                        </div><div class="line"> </div><div class="line">```                               </div><div class="line">type PhoneNumber = String </div><div class="line">type Name = String </div><div class="line">type PhoneBook = [(Name,PhoneNumber)]</div><div class="line"></div><div class="line">inPhoneBook :: Name -&gt; PhoneNumber -&gt; PhoneBook -&gt; Bool </div><div class="line">inPhoneBook name pnumber pbook = (name,pnumber) `elem` pbook</div><div class="line"></div><div class="line">VS</div><div class="line"></div><div class="line">inPhoneBook :: String -&gt; String -&gt; [(String ,String)] -&gt; Bool</div><div class="line"></div><div class="line">```                          </div><div class="line"></div><div class="line">### Recursive data structures</div><div class="line"></div><div class="line">递归定义数据结构,以 List 为例子         </div><div class="line"></div><div class="line">```     </div><div class="line">data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)</div><div class="line">data List a = Empty | Cons &#123; listHead :: a, listTail :: List a&#125; deriving (Show, Read, Eq, Ord)</div><div class="line">con 就是指 : </div><div class="line">伪代码</div><div class="line">data List a = Empty | a : (List a) deriving (Show, Read, Eq, Ord)</div><div class="line">```                   </div><div class="line"></div><div class="line">ﬁxity 指定了他应该是 leftassociative 或是 right-associative，还有他的优先级。             </div><div class="line"></div><div class="line">```          </div><div class="line">infixr 5 :-:</div><div class="line">data List a = Empty | a :-: (List a) deriving (Show, Read, Eq, Ord)</div><div class="line">```          </div><div class="line"></div><div class="line">定义自己的 typeclass 相当于 interface。          </div><div class="line"></div><div class="line">```                        </div><div class="line">class Eq a where</div><div class="line">	(==) :: a -&gt; a -&gt; Bool </div><div class="line">	(/=) :: a -&gt; a -&gt; Bool </div><div class="line">	x == y = not (x /= y) </div><div class="line">	x /= y = not (x == y)</div><div class="line">```                                </div><div class="line"></div><div class="line">class Eq a where 表示定义一个新的 typeclass 叫做 Eq，a 是一个泛型。                   </div><div class="line"></div><div class="line">```                   </div><div class="line">instance Eq TrafficLight where </div><div class="line">	Red == Red = True </div><div class="line">	Green == Green = True </div><div class="line">	Yellow == Yellow = True </div><div class="line">	_ == _ = False</div><div class="line">```                               </div><div class="line"></div><div class="line">instance 就是去实现特定类型的接口行为，他的行为可能直接的实现方式是 deriving(Eq)。        </div><div class="line"></div><div class="line">### yes-no typeclass</div><div class="line"></div><div class="line">主要是接口的定义和具体类的实现。模仿了 JavaScript 弱类型的语言对 Bool 值的转化。        </div><div class="line"></div><div class="line">```         </div><div class="line">class YesNo a where</div><div class="line">	yeasno :: a -&gt; Bool</div><div class="line"></div><div class="line">instance YesNo Int where</div><div class="line">	yesno 0 = False</div><div class="line">	yesno _ = True</div><div class="line"></div><div class="line">```          </div><div class="line"></div><div class="line">### Functor typeclass</div><div class="line"></div><div class="line">Functor 的定义 ，f 是一个__类型构造子__，他接受一个类型。比如 [a] 已经是一个具体的类型，其中 [] 是一个类型构造子。                          </div><div class="line"></div><div class="line">```      </div><div class="line">class Functor f where </div><div class="line">	fmap :: (a -&gt; b) -&gt; f a -&gt; f b</div><div class="line">```            </div><div class="line"></div><div class="line">### Kind</div><div class="line"></div><div class="line">&lt;!--输入与输出</div><div class="line"></div><div class="line">函数式地思考来解决问题</div><div class="line">运用逆波兰表达法</div><div class="line"></div><div class="line">逆波兰式，把运算对象堆叠在一起，当遇到运算符的时候将最近的两个对象做运算，在放到堆上。--&gt;</div><div class="line"> </div><div class="line">## Functors,Applicative Functors 与Monoids</div><div class="line"></div><div class="line">有篇文章更直观一些中文&lt;sup&gt;[1]&lt;/sup&gt;英文&lt;sup&gt;[2]&lt;/sup&gt;</div><div class="line"></div><div class="line">### Functor</div><div class="line"></div><div class="line">Functor  或者理解成，实现 Functor 的类的接口</div></pre></td></tr></table></figure>
+<p>instance Functor ((-&gt;)r) where<br>    fmap = (.)<br>```<br>实际上做的就是一个 function composition 的事情 f.g (x) = f(g(x))    </p>
+<p><code>fmap (replicate 3) :: (Functor f) =&gt; f a -&gt; f [a]</code> 这样可以理解为 <code>fmap (replicate 3)</code> 这个函数，接受一个参数 <code>f a</code> 其中 f 实现了 Functor ，<code>f a</code> 可以理解成一个装了 a 类型的盒子，最后返回了一个装了 [a] 类型的盒子。 </p>
 
       
     </div>
@@ -607,6 +511,10 @@ instance YesNo Int where
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/29/RAC源码学习-二/" rel="prev" title="RAC源码学习<二>">
+                RAC源码学习<二> <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -685,7 +593,7 @@ instance YesNo Int where
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -696,7 +604,7 @@ instance YesNo Int where
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -707,7 +615,7 @@ instance YesNo Int where
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -742,7 +650,7 @@ instance YesNo Int where
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从零开始"><span class="nav-number">1.</span> <span class="nav-text">从零开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#list-入门"><span class="nav-number">1.1.</span> <span class="nav-text">List 入门</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typed-and-typeclasses"><span class="nav-number">2.</span> <span class="nav-text">Typed and Typeclasses</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数的语法"><span class="nav-number">3.</span> <span class="nav-text">函数的语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pattern-matching"><span class="nav-number">3.1.</span> <span class="nav-text">Pattern matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归"><span class="nav-number">4.</span> <span class="nav-text">递归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-maximum"><span class="nav-number">4.1.</span> <span class="nav-text">实现 Maximum</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高阶函数"><span class="nav-number">5.</span> <span class="nav-text">高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-和-filter"><span class="nav-number">5.1.</span> <span class="nav-text">map 和 filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda"><span class="nav-number">5.2.</span> <span class="nav-text">lambda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fold"><span class="nav-number">5.3.</span> <span class="nav-text">fold</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function-composition"><span class="nav-number">5.4.</span> <span class="nav-text">Function composition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模组-modules"><span class="nav-number">6.</span> <span class="nav-text">模组 (Modules)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datalist"><span class="nav-number">6.1.</span> <span class="nav-text">Data.List</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造我们自己的-types-和-typeclasses"><span class="nav-number">7.</span> <span class="nav-text">构造我们自己的 Types 和 Typeclasses</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#algebraic-data-types"><span class="nav-number">7.1.</span> <span class="nav-text">Algebraic Data Types</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#record-syntax"><span class="nav-number">7.2.</span> <span class="nav-text">Record Syntax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-parameters"><span class="nav-number">7.3.</span> <span class="nav-text">Type parameters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derived-instances"><span class="nav-number">7.4.</span> <span class="nav-text">Derived instances</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type-synonyms"><span class="nav-number">7.5.</span> <span class="nav-text">Type synonyms</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recursive-data-structures"><span class="nav-number">7.6.</span> <span class="nav-text">Recursive data structures</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yes-no-typeclass"><span class="nav-number">7.7.</span> <span class="nav-text">yes-no typeclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#functor-typeclass"><span class="nav-number">7.8.</span> <span class="nav-text">Functor typeclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kind"><span class="nav-number">7.9.</span> <span class="nav-text">Kind</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#functorsapplicative-functors-与monoids"><span class="nav-number">8.</span> <span class="nav-text">Functors,Applicative Functors 与Monoids</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从零开始"><span class="nav-number">1.</span> <span class="nav-text">从零开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#list-入门"><span class="nav-number">1.1.</span> <span class="nav-text">List 入门</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typed-and-typeclasses"><span class="nav-number">2.</span> <span class="nav-text">Typed and Typeclasses</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数的语法"><span class="nav-number">3.</span> <span class="nav-text">函数的语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pattern-matching"><span class="nav-number">3.1.</span> <span class="nav-text">Pattern matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归"><span class="nav-number">4.</span> <span class="nav-text">递归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-maximum"><span class="nav-number">4.1.</span> <span class="nav-text">实现 Maximum</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高阶函数"><span class="nav-number">5.</span> <span class="nav-text">高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-和-filter"><span class="nav-number">5.1.</span> <span class="nav-text">map 和 filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda"><span class="nav-number">5.2.</span> <span class="nav-text">lambda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fold"><span class="nav-number">5.3.</span> <span class="nav-text">fold</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function-composition"><span class="nav-number">5.4.</span> <span class="nav-text">Function composition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模组-modules"><span class="nav-number">6.</span> <span class="nav-text">模组 (Modules)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#datalist"><span class="nav-number">6.1.</span> <span class="nav-text">Data.List</span></a></li></ol></li></ol></div>
             
 
           </div>

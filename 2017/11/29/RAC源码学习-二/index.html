@@ -1,0 +1,852 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="源码阅读," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="团队内部分享 基于RAC 2.5 版本，可能代码比较多，但还是直接看代码比较实在…">
+<meta name="keywords" content="源码阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAC源码学习&lt;二&gt;">
+<meta property="og:url" content="http://yoursite.com/2017/11/29/RAC源码学习-二/index.html">
+<meta property="og:site_name" content="小山河">
+<meta property="og:description" content="团队内部分享 基于RAC 2.5 版本，可能代码比较多，但还是直接看代码比较实在…">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/RAC源码学习-二/RAC.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/RAC源码学习-二/operators.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/RAC源码学习-二/RAC_textfield.png">
+<meta property="og:updated_time" content="2017-12-05T05:55:07.639Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RAC源码学习&lt;二&gt;">
+<meta name="twitter:description" content="团队内部分享 基于RAC 2.5 版本，可能代码比较多，但还是直接看代码比较实在…">
+<meta name="twitter:image" content="http://yoursite.com/2017/11/29/RAC源码学习-二/RAC.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/29/RAC源码学习-二/"/>
+
+
+
+
+
+  <title>RAC源码学习<二> | 小山河</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?58dc8367843d65b8486545ec53b4a483";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小山河</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/29/RAC源码学习-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小山河">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/favicon.ico">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小山河">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RAC源码学习<二></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-29T11:03:36+08:00">
+                2017-11-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">源码阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/29/RAC源码学习-二/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/11/29/RAC源码学习-二/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>团队内部分享 基于RAC 2.5 版本，可能代码比较多，但还是直接看代码比较实在…</p>
+<a id="more"></a>
+<h2 id="着手"><a href="#着手" class="headerlink" title="着手"></a>着手</h2><p>对待新的技术，我一般开始是看看它是如何使用的，这样可以有个大体认识。也可以通过看别人的讲过的博客，对后面要认知的概念有个了解。<br>先来创建一个基本的信号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;1&quot;];</div><div class="line">        [subscriber sendNext:@&quot;2&quot;];</div><div class="line">        [subscriber sendNext:@&quot;3&quot;];</div><div class="line">        [subscriber sendNext:@&quot;4&quot;];</div><div class="line">        return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">            NSLog(@&quot;delloc&quot;);</div><div class="line">        &#125;];</div><div class="line">&#125;];</div><div class="line">[signal subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;id is %@&quot;,x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>run 一下， console 输出。这样看好像没有什么功能性的特征表现出来而且写法比较复杂，这是因为不知道它内部在做什么，他可以做什么…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">RACDEMO[447:104218] id is 1</div><div class="line">RACDEMO[447:104218] id is 2</div><div class="line">RACDEMO[447:104218] id is 3</div><div class="line">RACDEMO[447:104218] id is 4</div><div class="line">RACDEMO[447:104218] delloc</div></pre></td></tr></table></figure>
+<p>也可以试一下 UI 上的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">UIButton *bu = [UIButton buttonWithType:UIButtonTypeCustom];</div><div class="line">bu.bounds = CGRectMake(0, 0, 200, 44);</div><div class="line">bu.center = self.view.center;</div><div class="line">[bu setBackgroundColor:[UIColor greenColor]];</div><div class="line">[self.view addSubview:bu];</div><div class="line">[[bu rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;button is %@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">UITextField *texfiled = [UITextField new];</div><div class="line">texfiled.backgroundColor = [UIColor redColor];</div><div class="line">texfiled.bounds = CGRectMake(0, 0, 200, 60);</div><div class="line">CGPoint point = self.view.center;</div><div class="line">point.y -= 80;</div><div class="line">texfiled.center = point;</div><div class="line">texfiled.delegate = self;</div><div class="line">[self.view addSubview:texfiled];</div><div class="line"></div><div class="line">[[self rac_signalForSelector:@selector(textFieldDidBeginEditing:)</div><div class="line">                         fromProtocol:@protocol(UITextFieldDelegate)]</div><div class="line">       subscribeNext:^(NSString *x) &#123;</div><div class="line">          NSLog(@&quot;----&gt; %@&quot;,x);</div><div class="line">&#125;];</div><div class="line">    </div><div class="line">[[texfiled rac_textSignal] subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;rac_textSignal is %@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">RAC(bu,userInteractionEnabled) = [[texfiled rac_textSignal] map:^id(NSString *value) &#123;</div><div class="line">        NSLog(@&quot;map is %@&quot;,value);</div><div class="line">        return value.length &gt; 5?@YES:@NO;</div><div class="line">&#125;];   </div><div class="line"> </div><div class="line">[[texfiled rac_signalForControlEvents:UIControlEventEditingDidBegin] subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;--------------------%@&quot;, x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>跟原先写法比较，可能结构上更加紧凑，UI的状态绑定上少了很多代码。那是如何实现的呢？UIButton 和 UITextField 是如何添加了 rac_ 前缀的属性或者方法的？来简单跟踪一下源码实现。<br>这里 RAC 通过类别扩展了 UIControl 的方法，在 UIControl+RACSignalSupport 文件中，提供了 rac_signalForControlEvents 的方法实现。这里又出现了很多其他的类，比如 RACSignal、RACDisposable、RACSubscriber，这几个也是我们 RAC 中主要作用的几个类。我们看到这里的实现其实和我们上面创建一个简单的信号是一样的。           </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (RACSignal *)rac_signalForControlEvents:(UIControlEvents)controlEvents &#123;</div><div class="line">	@weakify(self);</div><div class="line">	return [RACSignal</div><div class="line">		createSignal:^(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">			@strongify(self);</div><div class="line">			[self addTarget:subscriber action:@selector(sendNext:) forControlEvents:controlEvents];</div><div class="line">			[self.rac_deallocDisposable addDisposable:[RACDisposable disposableWithBlock:^&#123;</div><div class="line">				[subscriber sendCompleted];</div><div class="line">			&#125;]];</div><div class="line">			return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">				@strongify(self);</div><div class="line">				[self removeTarget:subscriber action:@selector(sendNext:) forControlEvents:controlEvents];</div><div class="line">			&#125;];</div><div class="line">		&#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>他这里其实就是创建了一个简单信号，然后返回给了订阅者。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="信号-racsignal"><a href="#信号-RACSignal" class="headerlink" title="信号 RACSignal"></a>信号 RACSignal</h3><p>那么信号是什么？<br>接着看代码，我们发现 RACSignal 是继承了一个叫 RACStream 的抽象类。它申明了很多方法，但是并没有具体的方法实现，待继承的子类完善。并且在 RACStream 的文件中我们也发现了一些操作方法，它也是一类别的形式扩充的，像刚刚我们使用过的 map ，还有些你看名字估计就可以猜出实现目的的操作方法，像  filter、ignore、reduceEach 等等。我们这里先放一下。接着回到 RACSignal 的实现文件中。</p>
+<p>在头文件中很清晰的用类别划分了类的实现方法的关系。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@interface RACSignal : RACStream</div><div class="line">@interface RACSignal (RACStream)</div><div class="line">@interface RACSignal (Subscription)</div><div class="line">@interface RACSignal (Debugging)</div><div class="line">@interface RACSignal (Testing)</div><div class="line">@interface RACSignal (Deprecated)</div></pre></td></tr></table></figure>
+<p>最后三个不是我们的跟踪重点，可以先搁置。在追溯代码实现的时候，我们可能需要的是不停的回溯到产生疑问的代码处，我们现在追踪一下它的 createSignal: 方法             </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">RACSignal  call createSignal:</div><div class="line">	-  RACDynamicSignal call createSignal:</div><div class="line">in  RACDynamicSignal&apos;s </div><div class="line">	RACDynamicSignal *signal = [[self alloc] init];</div><div class="line">	signal-&gt;_didSubscribe = [didSubscribe copy];</div><div class="line">	return [signal setNameWithFormat:@&quot;+createSignal:&quot;];</div></pre></td></tr></table></figure>
+<p>RACSignal 的 createSignal 方法最后返回了一个 RACDynamicSignal 对象实例，他持有了原来创建 block 的拷贝。这个 block 没有执行，那在什么情况下触发呢？我们先看一下 block 的内部实现。      </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[self addTarget:subscriber action:@selector(sendNext:) forControlEvents:controlEvents];</div></pre></td></tr></table></figure>
+<p>UIControl 的实例给自己添加了UIControlEventTouchUpInside一个事件，这个事件会触发 target/acion 方法, 发送给target 执行。那么 subscriber 是什么？接着看代码，返回的 RACDynamicSignal 实例又做了一个操作 subscribeNext 。     </p>
+<p>在这个方法中，他创建了一个 RACSubscriber 实例，包含了外部的 nextBlock（只有打印功能） 。代码如下                        </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">RACSubscriber *o = [RACSubscriber subscriberWithNext:nextBlock error:NULL completed:NULL];</div><div class="line">RACDisposable *disposable = [self subscribe:o];</div><div class="line">return disposable;</div></pre></td></tr></table></figure>
+<p>这个方法位于RACSignal(Subscription)的扩充中，又接着调用了自己的 subscribe 的方法。               </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (RACDisposable *)subscribe:(id&lt;RACSubscriber&gt;)subscriber &#123;</div><div class="line">	RACCompoundDisposable *disposable = [RACCompoundDisposable compoundDisposable];</div><div class="line">	subscriber = [[RACPassthroughSubscriber alloc] initWithSubscriber:subscriber signal:self disposable:disposable];</div><div class="line">	if (self.didSubscribe != NULL) &#123;</div><div class="line">		RACDisposable *schedulingDisposable = [RACScheduler.subscriptionScheduler schedule:^&#123;</div><div class="line">			RACDisposable *innerDisposable = self.didSubscribe(subscriber);</div><div class="line">			[disposable addDisposable:innerDisposable];</div><div class="line">		&#125;];</div><div class="line"></div><div class="line">		[disposable addDisposable:schedulingDisposable];</div><div class="line">	&#125;</div><div class="line">	return disposable;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里出现了 RACCompoundDisposable、RACPassthroughSubscriber、RACScheduler 新的类，我们先不类功能的跟踪，直观给我们的印象就是 RACPassthroughSubscriber 的实例，包裹了另外两个类的实例，然后放到一个队列中执行。<code>self.didSubscribe(subscriber);</code> 这里执行了 block 。这个 block 就是 createSignal：函数的参数。<br>我们看一下 RACPassthroughSubscriber 的初始化方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">- (instancetype)initWithSubscriber:(id&lt;RACSubscriber&gt;)subscriber signal:(RACSignal *)signal disposable:(RACCompoundDisposable *)disposable &#123;</div><div class="line">	self = [super init];</div><div class="line">	if (self == nil) return nil;</div><div class="line">	_innerSubscriber = subscriber;</div><div class="line">	_signal = signal;</div><div class="line">	_disposable = disposable;</div><div class="line">	[self.innerSubscriber didSubscribeWithDisposable:self.disposable];</div><div class="line">	return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>只是对订阅者、信号和善后对象做了一个封装。这里我们忽略了一个东西RACSubscriber,这是一个协议(java 接口)，刚刚的函数中的参数都是传递的实现了这个接口的实例（面向接口编程）。回到上面的 createSignal：函数 。<br>这个block最终被调用了，传入的参数就是我们的RACPassthroughSubscriber实例，block中的 sendNext：也是RACSubscriber协议中需要实现的方法。所以每次button的click都会调用了RACPassthroughSubscriber实例中的sendNext方法。接着看他的具体实现                                                                                                  </p>
+<p>执行方法调用了 innerSubscriber 的 sendNext：方法，就是最开始包含打印的那个 block 的 RACSubscriber 实例。他的 sendNext：实现如下 <code>[self.innerSubscriber sendNext:value];</code><br>在innerSubscriber中的实现 <code>..nextBlock(value);..</code> (这里代码块解析出现问题，代码不全)    </p>
+<p>就在这里直接调用了外部打印了，这里有张图来阐述整个过程。<br><img src="/2017/11/29/RAC源码学习-二/RAC.png" width="662" height="455" alt="跟踪过程1" align="center/"></p>
+<!--### 热信号 
+### 冷信号-->
+<h3 id="订阅者-racsubscriber"><a href="#订阅者-RACSubscriber" class="headerlink" title="订阅者 RACSubscriber"></a>订阅者 RACSubscriber</h3><p>这里 RACSubscriber 其实即是一个协议也是一个对象，有点像 NSObject。作为协议他规定一些简单的函数：sendNext:、sendError:、sendCompleted:和didSubscribeWithDisposable:。而在类的实现中它只在头文件RACSubscriber+Private中，暴露了工程方法，它本身也实现了协议的方法。</p>
+<h2 id="类的设计结构"><a href="#类的设计结构" class="headerlink" title="类的设计结构"></a>类的设计结构</h2><p>从 pod 文件结构就看出分为 <code>Core</code> 和 <code>UI</code><br>在 <code>Core</code> 中，我们来跟踪一下主要类的结构继承关系,除去通过类别扩充出来的类，在过滤一下基础类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">RACChannel      </div><div class="line">--  RACKVOChannel</div><div class="line"></div><div class="line">NSValueTransformer         </div><div class="line">--  RACValueTransformer</div><div class="line"></div><div class="line">RACStream            </div><div class="line">--  RACSignal           </div><div class="line">    --  RACDynamicSignal</div><div class="line">    --  RACEmptySignal</div><div class="line">    --  RACErrorSignal</div><div class="line">    --  RACReturnSignal</div><div class="line">    --  RACSubject</div><div class="line">        --  RACBehaviorSubject</div><div class="line">        --  RACGroupedSignal</div><div class="line">        --  RACReplaySubject</div><div class="line">          </div><div class="line">--  RACSequence          </div><div class="line">	 --  RACUnarySequence</div><div class="line">	 --  RACTupleSequence</div><div class="line">	 --  RACStringSequence</div><div class="line">	 --  RACSignalSequence</div><div class="line">	 --  RACDynamicSequence</div><div class="line">	 --  RACArraySequence                  </div><div class="line">	     --  RACEagerSequence</div><div class="line">	 --  RACEmptySequence</div><div class="line">	 --  RACIndexSetSequence</div><div class="line">    </div><div class="line">RACScheduler          </div><div class="line">--  RACTestScheduler</div><div class="line">--  RACImmediateScheduler</div><div class="line">--  RACQueueScheduler             </div><div class="line">    --  RACTargetQueueScheduler</div><div class="line">--  RACSubscriptionScheduler          </div><div class="line"></div><div class="line">RACDisposable             </div><div class="line">--  RACCompoundDisposable</div><div class="line">--  RACKVOTrampoline</div><div class="line">--  RACScopedDisposable</div><div class="line">--  RACSerialDisposable</div><div class="line"></div><div class="line">RACSubscriber</div><div class="line">RACPassthroughSubscriber</div><div class="line">RACCommand</div><div class="line">RACMulticastConnection</div><div class="line">RACTuple</div><div class="line">RACBlockTrampoline</div><div class="line">RACDelegateProxy</div><div class="line">RACEvent</div><div class="line">RACUnit</div><div class="line">RACKVOProxy</div><div class="line">RACSubscriptingAssignmentTrampoline</div><div class="line">RACObjCRuntime</div></pre></td></tr></table></figure>
+<p>这里整理了一下，主要分为了几个模块的继承簇。我们可以集中看一下RACSequence、RACStream、RACScheduler、RACDisposable、RACSubject。        </p>
+<h2 id="texfiled实例跟踪"><a href="#texfiled实例跟踪" class="headerlink" title="texfiled实例跟踪"></a>texfiled实例跟踪</h2><p>先回顾一下上面信号被订阅的一个流程，因为下面的操作会变得复杂起来     </p>
+<p>1.我们通过createSignal:创建一个DynamicSignal，他有一个block参数，变成了DynamicSignal的_didSubscribe属性<br>2.当我们的信号被订阅的时候，其实是调用了signal 的subscribeNext:函数，他也有个racblock参数，一般里面是调用了订阅者的sendNext:函数，订阅者是在这个函数中生成的<br>3.在sendNext:函数中生成一个RACSubscriber的实例(暂时记为racsubscriber)，这就是订阅者实例，刚刚的函数的入参成为了他的一个next属性，接着DynamicSignal调用了subscribe:函数，入参就是刚刚这个racsubscriber。<br>4.在subscribe:函数中，又对订阅者进行了一步封装，生成了RACPassthroughSubscriber实例(暂时记为passsubscriber)，他也包含了racsubscriber、DynamicSignal信号本身还有管理释放的对象。接着就执行了DynamicSignal的_didSubscribe，入参为passsubscriber<br>5.一般_didSubscribe中式调用了入参的sendNext:方法，passsubscriber就是调用了内部的racsubscriber的sendNext:方法。<br>6.racsubscriber很老实，直接调用了racblock.参数就是一直被sendNext:传来传去的值</p>
+<p>我们在看一下对RACStream的operator操作，这在代码中也会经常出现这些方法，那么哪些是比较核心的呢，通过这个图其实可以一目了然<br><img src="/2017/11/29/RAC源码学习-二/operators.png" width="553" height="447" alt="operators" align="center/"></p>
+<p>如果单独去看bind、map、flattenMap 的实现可能比较生涩，还是先回到上面UITextField的例子，结合例子做一些分析。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[[[texfiled rac_textSignal] flattenMap:^RACStream *(id value) &#123;</div><div class="line">        return [RACReturnSignal return:[NSString stringWithFormat:@&quot;输出:%@&quot;,value]];</div><div class="line">    &#125;] subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;--%@&quot;,x);</div><div class="line">    &#125;];</div></pre></td></tr></table></figure>
+<p>这里rac_textSigna也是创建了一个信号返回出来，然后flattenMap对信号做了一个处理，在输出的内容前面加了个前缀，我们跟进去看一下代码实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (RACSignal *)rac_textSignal &#123;</div><div class="line">	@weakify(self);</div><div class="line">	return [[[[[RACSignal</div><div class="line">		defer:^&#123;</div><div class="line">			@strongify(self);</div><div class="line">			return [RACSignal return:self];</div><div class="line">		&#125;]</div><div class="line">		concat:[self rac_signalForControlEvents:UIControlEventAllEditingEvents]]</div><div class="line">		map:^(UITextField *x) &#123;</div><div class="line">			return x.text;</div><div class="line">		&#125;]</div><div class="line">		takeUntil:self.rac_willDeallocSignal]</div><div class="line">		setNameWithFormat:@&quot;%@ -rac_textSignal&quot;, self.rac_description];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一步一步拆解开 <code>RACSignal-&gt;defer:-&gt;concat:-&gt;map:-&gt;takeUntil:</code>(setNameWithFormat:这个方法没有特别作用只是添加了一个name)             </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">函数调用：</div><div class="line">defer:^&#123;</div><div class="line">		return returnSignal(value=(UITextField*)self);</div><div class="line">&#125;</div><div class="line">defer 比较简单就是对 createSignal 进行了一次包装省去了disposable处理，入参block做的事情是用订阅了上面包裹了textfield的信号 </div><div class="line">函数实现：</div><div class="line">defer:(RACSignal * (^)(void))block</div><div class="line">return [RACSignal createSignal:^(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">		return [block() subscribe:subscriber];</div><div class="line">&#125;]</div><div class="line">------------------------------------------------------------------------------------------------------------------</div><div class="line">函数调用：</div><div class="line">concat:[self rac_signalForControlEvents:UIControlEventAllEditingEvents]]</div><div class="line">这里rac_signalForControlEvents创建了一个Signal，被订阅的时候会把textfield的编辑事件发送给订阅者</div><div class="line">函数实现：</div><div class="line">return [RACSignal createSignal:^(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">		RACSerialDisposable *serialDisposable = [[RACSerialDisposable alloc] init];</div><div class="line">		直接订阅原来的信号</div><div class="line">		如果这个信号被订阅这里的入参x是uitextfiled</div><div class="line">		RACDisposable *sourceDisposable = [self subscribeNext:^(id x) &#123;</div><div class="line">			[subscriber sendNext:x];</div><div class="line">		&#125; error:^(NSError *error) &#123;</div><div class="line">			[subscriber sendError:error];</div><div class="line">		&#125; completed:^&#123;</div><div class="line">			RACDisposable *concattedDisposable = [signal subscribe:subscriber];</div><div class="line">			serialDisposable.disposable = concattedDisposable;</div><div class="line">		&#125;];</div><div class="line"></div><div class="line">		serialDisposable.disposable = sourceDisposable;</div><div class="line">		return serialDisposable;</div><div class="line">	&#125;]</div></pre></td></tr></table></figure>
+<p>这个创建函数中涉及到三个信号 new_signal(ns) orignal_signal(os) needconcat_signal(cs) 在ns的在他的_didSubscribe中，<br>直接订阅了 os 这里的订阅者是一个新的实例(os_sub)，这里用的是subscribeNext:error:completed:函数，其实和subscribeNext:效果一样的，<br>最后都是调用的相同实现函数。如果ns被订阅，os也会执行订阅的方法[subscriber sendNext:x]这里就是向外部的订阅者ns_sub发送了x，在完成的时<br>候发送completed，在这个block中，直接用ns_sub对cs订阅了，这边有个先后关系。<br>可以在改写的简单点  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div></pre></td><td class="code"><pre><div class="line">RACSignal *signal_A = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;A&quot;];</div><div class="line">        [subscriber sendCompleted];</div><div class="line">        return nil;</div><div class="line">&#125;];</div><div class="line">RACSignal *signal_B = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;B&quot;];</div><div class="line">        return nil;</div><div class="line">&#125;];   </div><div class="line">RACSignal *concat_s = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        RACSerialDisposable *serialDisposable = [[RACSerialDisposable alloc] init];</div><div class="line">        RACDisposable *sourceDisposable = [signal_A subscribeNext:^(id x) &#123;</div><div class="line">            [subscriber sendNext:x];</div><div class="line">        &#125; error:^(NSError *error) &#123;</div><div class="line">            [subscriber sendError:error];</div><div class="line">        &#125; completed:^&#123;</div><div class="line">            RACDisposable *concattedDisposable = [signal_B subscribe:subscriber];</div><div class="line">            serialDisposable.disposable = concattedDisposable;</div><div class="line">        &#125;];</div><div class="line">        serialDisposable.disposable = sourceDisposable;</div><div class="line">        return serialDisposable;</div><div class="line">&#125;];</div><div class="line">[concat_s subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;========&gt;%@&quot;,x);</div><div class="line">&#125;];</div><div class="line">console.log:</div><div class="line">	RACDEMO[1548:427783] ========&gt;A</div><div class="line">   	RACDEMO[1548:427783] ========&gt;B</div><div class="line"></div><div class="line">------------------------------------------------------------------------------------------------------------------</div><div class="line">接着回到下一个函数调用</div><div class="line">函数调用：</div><div class="line">map:^(UITextField *x) &#123;</div><div class="line">		return x.text;</div><div class="line">&#125;</div><div class="line">函数实现：</div><div class="line">map:(id (^)(id value))block</div><div class="line">Class class = self.class;//RACDynamicSignal</div><div class="line">return [self flattenMap:^(id value) &#123;</div><div class="line">		return [class return:block(value)];-----&gt; RACReturnSignal</div><div class="line">&#125;]</div><div class="line">函数实现：</div><div class="line">flattenMap:(RACStream * (^)(id value))block 这个入参就是用信号包裹一般NSObject对象</div><div class="line">Class class = self.class;</div><div class="line">return [self bind:^&#123;</div><div class="line">		return ^(id value, BOOL *stop) &#123;</div><div class="line">			id stream = block(value) ?: [class empty];//这里的value值是一般对象</div><div class="line">			return stream;</div><div class="line">		&#125;;</div><div class="line">&#125;]</div><div class="line">定义:</div><div class="line">typedef RACStream * (^RACStreamBindBlock)(id value, BOOL *stop)</div><div class="line">函数实现：</div><div class="line">bind:(RACStreamBindBlock (^)(void))block</div><div class="line">return [[RACSignal createSignal:^(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">		//执行了入参block 得到一个由一般对象到 Stream 的转换方法 包裹的其实是 uitextfiled的text的值</div><div class="line">		RACStreamBindBlock bindingBlock = block();</div><div class="line">		// 这个self 指的是调用map的Signal 也就是 concat之后返回的那个signal </div><div class="line">		// 创建了一个数组，看过之前的版本原来是 OSAtomicDecrement32Barrier/OSAtomicIncrement32Barrier 一个递减的原子操作，已经deprecated</div><div class="line">		// 总共数组中就两个信号</div><div class="line">		NSMutableArray *signals = [NSMutableArray arrayWithObject:self];</div><div class="line"></div><div class="line">		RACCompoundDisposable *compoundDisposable = [RACCompoundDisposable compoundDisposable];</div><div class="line"></div><div class="line">		//当信号完成的时候，移出数组。当数组空的时候向订阅者发送完成消息</div><div class="line">		void (^completeSignal)(RACSignal *, RACDisposable *) = ^(RACSignal *signal, RACDisposable *finishedDisposable) &#123;</div><div class="line">			BOOL removeDisposable = NO;</div><div class="line"></div><div class="line">			@synchronized (signals) &#123;</div><div class="line">				[signals removeObject:signal];</div><div class="line"></div><div class="line">				if (signals.count == 0) &#123;</div><div class="line">					[subscriber sendCompleted];</div><div class="line">					[compoundDisposable dispose];</div><div class="line">				&#125; else &#123;</div><div class="line">					removeDisposable = YES;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			if (removeDisposable) [compoundDisposable removeDisposable:finishedDisposable];</div><div class="line">		&#125;;</div><div class="line"></div><div class="line">		</div><div class="line">		void (^addSignal)(RACSignal *) = ^(RACSignal *signal) &#123;</div><div class="line">			@synchronized (signals) &#123;</div><div class="line">				[signals addObject:signal];</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			RACSerialDisposable *selfDisposable = [[RACSerialDisposable alloc] init];</div><div class="line">			[compoundDisposable addDisposable:selfDisposable];</div><div class="line"></div><div class="line">			RACDisposable *disposable = [signal subscribeNext:^(id x) &#123;</div><div class="line">				[subscriber sendNext:x];</div><div class="line">			&#125; error:^(NSError *error) &#123;</div><div class="line">				[compoundDisposable dispose];</div><div class="line">				[subscriber sendError:error];</div><div class="line">			&#125; completed:^&#123;</div><div class="line">				@autoreleasepool &#123;</div><div class="line">					completeSignal(signal, selfDisposable);</div><div class="line">				&#125;</div><div class="line">			&#125;];</div><div class="line"></div><div class="line">			selfDisposable.disposable = disposable;</div><div class="line">		&#125;;</div><div class="line"></div><div class="line">		@autoreleasepool &#123;</div><div class="line">			RACSerialDisposable *selfDisposable = [[RACSerialDisposable alloc] init];</div><div class="line">			[compoundDisposable addDisposable:selfDisposable];</div><div class="line">			//同样创建了一个自己的订阅对象concat的信号</div><div class="line">			// 在concat 的_didSubscriber</div><div class="line">			RACDisposable *bindingDisposable = [self subscribeNext:^(id x) &#123;</div><div class="line">				// Manually check disposal to handle synchronous errors.</div><div class="line">				if (compoundDisposable.disposed) return;</div><div class="line"></div><div class="line">				BOOL stop = NO;</div><div class="line">				//这里的signal 是包含了uitextfield的text值的returnSignal </div><div class="line">				id signal = bindingBlock(x, &amp;stop);</div><div class="line"></div><div class="line">				@autoreleasepool &#123;</div><div class="line">					// 对这个text的returnSignal进行处理，把x传递出去了</div><div class="line">					// 然后调用完成函数这里returnSignal是sendNext之后就调用了sendCompleted方法，所以completed的block会执行</div><div class="line">					if (signal != nil) addSignal(signal);</div><div class="line">					if (signal == nil || stop) &#123;</div><div class="line">						[selfDisposable dispose];</div><div class="line">						completeSignal(self, selfDisposable);</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">			&#125; error:^(NSError *error) &#123;</div><div class="line">				[compoundDisposable dispose];</div><div class="line">				[subscriber sendError:error];</div><div class="line">			&#125; completed:^&#123;</div><div class="line">				@autoreleasepool &#123;</div><div class="line">					//信号没有结束所以没有调用</div><div class="line">					completeSignal(self, selfDisposable);</div><div class="line">				&#125;</div><div class="line">			&#125;];</div><div class="line"></div><div class="line">			selfDisposable.disposable = bindingDisposable;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		return compoundDisposable;</div><div class="line">	&#125;] setNameWithFormat:@&quot;[%@] -bind:&quot;, self.name];</div></pre></td></tr></table></figure>
+<p><img src="/2017/11/29/RAC源码学习-二/RAC_textfield.png" width="565" height="323" alt="RAC_textfield" align="center/"></p>
+<p>这里对oriSignal做一个以block为入参bind操作，且返回一个newSignal，其实是对原的oriSignal的sendNext:的参数做了block里面对应的操作在此包装成信号的一个过程。写一个简单的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;A&quot;];</div><div class="line">        [subscriber sendNext:@&quot;B&quot;];</div><div class="line">        [subscriber sendCompleted];</div><div class="line">        return nil;</div><div class="line">&#125;];</div><div class="line">    </div><div class="line">RACSignal *bind = [signal bind:^RACStreamBindBlock&#123;</div><div class="line">        return ^(NSString *value,BOOL *stop) &#123;</div><div class="line">            NSString *append = [NSString stringWithFormat:@&quot;bind-%@&quot;,value];</div><div class="line">            return [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">                [subscriber sendNext:append];</div><div class="line">                [subscriber sendCompleted];</div><div class="line">                return nil;</div><div class="line">            &#125;];</div><div class="line">        &#125;;</div><div class="line">&#125;];</div><div class="line">    </div><div class="line">[bind subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;%@&quot;,x);</div><div class="line"> &#125;];</div><div class="line">console:</div><div class="line">	RACDEMO[3322:177304] bind-A</div><div class="line">	RACDEMO[3322:177304] bind-B</div></pre></td></tr></table></figure>
+<p>最后是一个takeUntil:就是一个发送sendCompleted的时机，一直到收到rac_willDeallocSignal被调用的时候。<br>这里紧紧是一个UITextField的信号相关的一个例子，其他的我还会再做补充。</p>
+<h2 id="丰富的宏"><a href="#丰富的宏" class="headerlink" title="丰富的宏"></a>丰富的宏</h2><h3 id="ractarget"><a href="#RAC-TARGET-…" class="headerlink" title="RAC(TARGET, …)"></a>RAC(TARGET, …)</h3><p>RAC 中可以学习的宏有很多。原本我是看RAC(TARGET, …)这个宏的源码实现的，然后发现了一些写法有意思的宏：判断参数的个数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#define RAC(TARGET, ...) \</div><div class="line">    metamacro_if_eq(1, metamacro_argcount(__VA_ARGS__)) \</div><div class="line">        (RAC_(TARGET, __VA_ARGS__, nil)) \</div><div class="line">        (RAC_(TARGET, __VA_ARGS__))</div></pre></td></tr></table></figure>
+<p>我开始是要做一个信号绑定的操作，什么意思呢？他就是把label的一个text属性和UITextField的输入值相绑定，当输入发送变化的时候，label也会随之发送变化，这是一个很常见的开发场景，一般的话我们都会使用KVO来解决。那在RAC中，他提供了一个这样的宏RAC()，他就可以实现刚才说的那个效果。       </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">RAC(label, text, @&quot;received nil show value&quot;) = textField.rac_textSignal;</div><div class="line">也可以写成</div><div class="line">[textField.rac_textSignal subscribeNext:^(id x) &#123;  </div><div class="line">       label.text = x;  </div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>当跟进RAC这个宏的时候 metamacro_if_eq 好像是在比较什么，而第二个参数 metamacro_argcount 好像是在算参数的个数             </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#define metamacro_argcount(...) \</div><div class="line">        metamacro_at(20, __VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)</div><div class="line">        </div><div class="line">#define metamacro_at(N, ...) \</div><div class="line">        metamacro_concat(metamacro_at, N)(__VA_ARGS__)</div></pre></td></tr></table></figure>
+<p>这里 concat 就很简单，不在一一展示了他就是拼接了metamacro_at和N，给出了一个新的宏，我们这里N是20，那就是metamacro_at20。我在这个宏附件就找到了很多类似的宏。             </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">// metamacro_at expansions</div><div class="line">#define metamacro_at0(...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at1(_0, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at2(_0, _1, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at3(_0, _1, _2, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at4(_0, _1, _2, _3, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at5(_0, _1, _2, _3, _4, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at6(_0, _1, _2, _3, _4, _5, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at7(_0, _1, _2, _3, _4, _5, _6, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at8(_0, _1, _2, _3, _4, _5, _6, _7, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at9(_0, _1, _2, _3, _4, _5, _6, _7, _8, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at10(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at11(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at12(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at13(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at14(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at15(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at16(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at17(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at18(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at19(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, ...) metamacro_head(__VA_ARGS__)</div><div class="line">#define metamacro_at20(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, ...) metamacro_head(__VA_ARGS__)</div></pre></td></tr></table></figure>
+<p>原来的宏样式就变成了metamacro_at20(label, text, @”received nil show value”, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1) 宏转变一下就是 metamacro_head(3,2,1) </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#define metamacro_head(...) \</div><div class="line">        metamacro_head_(__VA_ARGS__, 0)</div><div class="line">#define metamacro_head_(FIRST, ...) FIRST</div></pre></td></tr></table></figure>
+<p>这边就得到参数个数了3。 这个有什么特别的地方呢？可能就是把原本在运行时才可以的做的参数个数判定工作，挪到了预处理阶段，提高了效率吧。</p>
+<h3 id="weak-和-strong"><a href="#weak-和-strong" class="headerlink" title="weak 和 strong"></a>weak 和 strong</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@weakify(self)</div><div class="line">    </div><div class="line">void(^b)(void) = ^&#123;</div><div class="line">    @strongify(self)</div><div class="line">    if (!self) &#123;</div><div class="line">       return ;</div><div class="line">    &#125;</div><div class="line">    NSLog(@&quot;self is %@&quot;,self);</div><div class="line">&#125;;</div><div class="line">    </div><div class="line">b();</div></pre></td></tr></table></figure>
+<p>RAC中对强引用和弱引用的写法我开始看的时候有点懵逼,因为他宏前面写了个@，搜了好多没找到答案，后来接着往下看才发现是紧跟着后面的函数的。可能是要达到引人注目的效果吧….             </p>
+<p>定义   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#define weakify(...) \</div><div class="line">    rac_keywordify \</div><div class="line">    metamacro_foreach_cxt(rac_weakify_,, __weak, __VA_ARGS__)</div><div class="line">    </div><div class="line">#define rac_keywordify autoreleasepool &#123;&#125;</div><div class="line">#define metamacro_foreach_cxt(MACRO, SEP, CONTEXT, ...) \</div><div class="line">        metamacro_concat(metamacro_foreach_cxt, metamacro_argcount(__VA_ARGS__))(MACRO, SEP, CONTEXT, __VA_ARGS__)</div></pre></td></tr></table></figure>
+<p>把它展开得到 <code>metamacro_foreach_cxt1(rac_weakify_,, __weak, self)</code>           </p>
+<p>定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define metamacro_foreach_cxt1(MACRO, SEP, CONTEXT, _0) MACRO(0, CONTEXT, _0)</div></pre></td></tr></table></figure>
+<p>再把它展开 <code>rac_weakify_(0, __weak,self)</code>           </p>
+<p>定义</p>
+<pre><code>#define rac_weakify_(INDEX, CONTEXT, VAR) \
+    CONTEXT __typeof__(VAR) metamacro_concat(VAR, _weak_) = (VAR);
+</code></pre><p>这里 <code>__typeof__(var)</code> 是gcc对C语言的一个扩展保留字，用于声明变量类型,var可以是数据类型（int， char*..),也可以是变量表达式。我们把它展开得到最终的<br><code>__weak __typeof__(self) self_weak_ = self;</code></p>
+<p>待续。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码阅读/" rel="tag"># 源码阅读</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/15/RAC源码学习-二-Haskell/" rel="next" title="B10-Haskell趣味指南">
+                <i class="fa fa-chevron-left"></i> B10-Haskell趣味指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/favicon.ico"
+               alt="小山河" />
+          <p class="site-author-name" itemprop="name">小山河</p>
+           
+              <p class="site-description motion-element" itemprop="description">Life goes on</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#着手"><span class="nav-number">1.</span> <span class="nav-text">着手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信号-racsignal"><span class="nav-number">2.1.</span> <span class="nav-text">信号 RACSignal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#订阅者-racsubscriber"><span class="nav-number">2.2.</span> <span class="nav-text">订阅者 RACSubscriber</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类的设计结构"><span class="nav-number">3.</span> <span class="nav-text">类的设计结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#texfiled实例跟踪"><span class="nav-number">4.</span> <span class="nav-text">texfiled实例跟踪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#丰富的宏"><span class="nav-number">5.</span> <span class="nav-text">丰富的宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ractarget"><span class="nav-number">5.1.</span> <span class="nav-text">RAC(TARGET, …)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weak-和-strong"><span class="nav-number">5.2.</span> <span class="nav-text">weak 和 strong</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小山河</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://zjbpha.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/11/29/RAC源码学习-二/';
+          this.page.identifier = '2017/11/29/RAC源码学习-二/';
+          this.page.title = 'RAC源码学习<二>';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://zjbpha.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
