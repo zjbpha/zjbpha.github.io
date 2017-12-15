@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="小山河">
 <meta property="og:description" content="RN 源码跟踪前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。">
 <meta property="og:image" content="http://yoursite.com/2017/11/15/React-Native-笔记-一/数据走向.png">
-<meta property="og:updated_time" content="2017-12-05T06:03:42.761Z">
+<meta property="og:updated_time" content="2017-12-15T13:29:04.862Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React Native 笔记&lt;一&gt;">
 <meta name="twitter:description" content="RN 源码跟踪前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。">
@@ -383,11 +383,10 @@
       
         <h1 id="rn-源码跟踪"><a href="#RN-源码跟踪" class="headerlink" title="RN 源码跟踪"></a>RN 源码跟踪</h1><p>前一阵子做过 React Native 相关的项目，和原来同项目的安卓同事讨论遇到的问题和实现方式时，跟踪源码找解决方案，这里做个整理回顾。</p>
 <a id="more"></a>
-<h2 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h2><p>由 RCTRootView 生成一个 rootView。这里遇到了一个重要的类 RCTBridge <strong>TODO:这是一个什么设计模式的?</strong> ,他接受了刚刚创建 rootView 的 url 和 launchOptions 两个参数。</p>
+<h2 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h2><p>由 RCTRootView 生成一个 rootView。这里遇到了一个重要的类 RCTBridge ßßß,他接受了刚刚创建 rootView 的 url 和 launchOptions 两个参数。</p>
 <p>对于 这个 Bridge 最后调用了初始化函数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (instancetype)initWithDelegate:(id&lt;RCTBridgeDelegate&gt;)delegate</div><div class="line">                       bundleURL:(NSURL *)bundleURL</div><div class="line">                  moduleProvider:(RCTBridgeModuleProviderBlock)block</div><div class="line">                   launchOptions:(NSDictionary *)launchOptions</div><div class="line">&#123;</div><div class="line">  if (self = [super init]) &#123;</div><div class="line">    _delegate = delegate;</div><div class="line">    _bundleURL = bundleURL;</div><div class="line">    _moduleProvider = block;</div><div class="line">    _launchOptions = [launchOptions copy];</div><div class="line"></div><div class="line">    [self setUp];</div><div class="line">    //reload key &apos;R&apos;</div><div class="line">    RCTExecuteOnMainQueue(^&#123; [self bindKeys]; &#125;);</div><div class="line">  &#125;</div><div class="line">  return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>对于 RCTExecuteOnMainQueue 这个是在主线程中，当运行设备是模拟器的时候，绑定 ‘R’ 键作为 reload 的作用。<strong>TODO:这个可以再细致一点</strong></p>
-<p>我们主要看下 <code>[self setUp];</code> 这个方法。有一些基础的类的创建和 bundle 的相关处理。然后这里我们看到它又创建了一个 BatchedBridge。</p>
+<p>对于 RCTExecuteOnMainQueue 这个是在主线程中，当运行设备是模拟器的时候，绑定 ‘R’ 键作为 reload 的作用。<br>我们主要看下 <code>[self setUp];</code> 这个方法。有一些基础的类的创建和 bundle 的相关处理。然后这里我们看到它又创建了一个 BatchedBridge。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[self createBatchedBridge];</div><div class="line">[self.batchedBridge start];</div></pre></td></tr></table></figure>
 <p>在 createBatchedBridge 函数中，它有创建了一个 RCTBatchedBridge 类型的属性变量 batchedBridge ，并且弱引用这自己。这个 RCTBatchedBridge 是 RCTBridge 的子类。在他的初始化方法中，我们看到了一个比较感兴趣的东西 RCTDisplayLink 这个类，还维护了一个 保存 dispatch_block_t 的_pendingCalls 的数组。在创建并初始化完成之后，他就把这个 batch 设给了一个静态的变量。</p>
 <p>在 RCTDisplayLink 中我们发现了 RunLoop CADisplayLink 这些和刷新或者线程状态有关的类。在做初始化的时候，也只是创建了一个集合和 CADisplayLink 的相关设定，根据 Sel 的名字 _jsThreadUpdate 可以猜测是一个在屏幕固定的刷新时机，去调用 js 的执行。 这个一会来看 …</p>
